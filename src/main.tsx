@@ -4,35 +4,30 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Banis from "./Banis";
 import { Bani as BaniType, fetchBanis } from "./utils";
 import Bani from "./Bani";
+import App from "./App";
 
-function App() {
-  const [banis, setBanis] = React.useState<Array<BaniType>>([]);
-
-  React.useEffect(() => {
-    fetchBanis().then((res) => setBanis([...res]));
-  }, []);
+function Main() {
+  const routes = new Array(500).fill(0).map((ele, i) => i)
 
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Banis />
+      element: <App />
     },
-    ...banis.map((bani) => ({
-      path: `/${bani.ID}`,
-      element: <Bani id={bani.ID} />
+    ...routes.map((bani) => ({
+      path: `/${bani}`,
+      element: <Bani id={bani} />
     }))
   ]);
-  console.log(router)
 
   return (
     <RouterProvider router={router} />
   );
 }
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById("root")!;
 
-createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(<Main />);
 

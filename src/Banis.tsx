@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { Bani, fetchBani, fetchBanis } from './utils';
-import { Router, useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react'
+import { Bani, fetchBanis } from './utils';
+import { useNavigate } from 'react-router-dom';
+import './App.css'
+import { BaniContext } from './App';
 
 
 const Banis = () => {
-  const [banis, setBanis] = useState(Array<Bani>);
+  const {banis, setBanis} = useContext(BaniContext);
   const history = useNavigate();
-
-  console.log('first')
-
 
   if (!banis.length) fetchBanis().then(banis => setBanis(banis))
 
   return (
-    <div>
+    <div className='App'>
       {
         banis.map((bani) =>
           <div
