@@ -4,6 +4,5 @@
             "vite-plugin-pwa/client"
           ],
           "jsx": "react"
-
     }
 }

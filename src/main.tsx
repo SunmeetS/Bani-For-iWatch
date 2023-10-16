@@ -8,21 +8,19 @@ import { Bani as BaniType, fetchBanis } from "./utils";
 import Bani from "./Bani";
 import App from "./App";
 import { registerSW } from 'virtual:pwa-register'
+import { Button, ButtonGroup, Checkbox, Switch, Typography } from "@mui/joy";
+
 
 function Main() {
   const routes = new Array(500).fill(0).map((ele, i) => i)
 
+  const updateSW = registerSW({
+    onOfflineReady() {
+      alert('You can now download this App.')
+    },
+  })
 
-const updateSW = registerSW({
-  onNeedRefresh() {
-    alert('ready to download')
-  },
-  onOfflineReady() {
-    alert('ready to use offline')
-  },
-})
-
-updateSW()
+  updateSW()
 
 
   const router = createBrowserRouter([
