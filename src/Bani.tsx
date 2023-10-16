@@ -42,7 +42,7 @@ const Bani = ({id}) => {
           if(verse.header || idx === 0 ) className += 'title ';
           if(isLarivaar) className += 'larivaar '
           return (
-            <div className={className}
+            <div tabIndex={1} className={className}
               style={{
                 fontSize: fontSize
               }}

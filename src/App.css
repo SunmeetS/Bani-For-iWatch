@@ -1,6 +1,6 @@
 :root {
-    --mainFontColor: rgba(255, 194, 88, 0.888);
-    --mainBackgroundColor: rgba(0, 0, 0, 0.908)
+    --mainFontColor: rgba(255, 193, 87, 0.888);
+    --mainBackgroundColor: rgba(0, 0, 0, 0.908);
 }
 .App {
     color: var(--mainFontColor);
@@ -12,6 +12,11 @@
     left: 0rem;
     overflow: scroll;
     text-align: center;
+}
+.bani {
+    width: 100vw;
+    background: var(--mainBackgroundColor);
+    color: var(--mainFontColor);
 }
 
 .customisations {

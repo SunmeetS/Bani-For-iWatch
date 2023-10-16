@@ -15,11 +15,11 @@ const Banis = () => {
     <div className='App'>
       {
         banis.map((bani) =>
-          <div
+          <button
             onClick={() => history('/'+bani.ID)}
             className='bani'>
             {bani.gurmukhiUni}
-          </div>
+          </button>
         )
       } 
     </div>
