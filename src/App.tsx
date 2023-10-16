@@ -1,10 +1,10 @@
 import { createContext, useEffect, useState } from 'react';
 import './App.css'
 import Banis from './Banis';
-import Bani from './Bani'
 import { fetchBanis } from './utils';
-import { Button, ButtonGroup, Checkbox, Switch, Typography } from '@mui/joy';
-import { useContext } from 'react';
+import { Button, ButtonGroup, Checkbox, Link, Switch, Typography } from '@mui/joy';
+import * as React from 'react';
+import Bani from './Bani';
 
 export const API_URL = 'https://api.banidb.com/v2/'
 export async function fetcher(url) {
@@ -32,7 +32,7 @@ function App() {
       <Typography>Light</Typography>
     </div>,
     <div key={'larivaar'} className='customisation'>
-      <Checkbox onChange={(e) => setIsLarivaar.checked} label='Larivaar' />
+      <Checkbox onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
     </div>,
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
@@ -40,6 +40,9 @@ function App() {
         <Button >{fontSize}</Button>
         <Button onClick={() => setFontSize(fontSize - 1)}>-</Button>
       </ButtonGroup>
+    </div>,
+    <div key={'larivaar'} className='customisation'>
+      <Checkbox onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
     </div>,
   ]
 
@@ -66,14 +69,24 @@ function App() {
   useEffect(() => {  
     fetchBanis().then(banis => setBanis(banis))
   }, [])  
+  const [baniID, setBaniID] = useState()
+
+  const [showBani, setShowBani] = useState(false)
+
+  const [isEnglish, setIsEnglish] = useState(false)
 
   return(
-    <BaniContext.Provider value={{banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize, setFontSize}}>
+    <BaniContext.Provider value={{banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize, 
+    setFontSize, setShowBani, baniID, setBaniID, isEnglish, setIsEnglish}}>
       <div className="App">
-        <Banis/>
-        {/* <div style={{display:'none'}}>
-          <Bani/>
-        </div> */}
+        <div className="customisations">
+          {
+            customisations.map((ele) => ele)
+          }
+          {baniID && <Button onClick={() => setBaniID(null)}>Back to All Banis</Button>}
+        </div>
+        {!baniID && <Banis/>}
+        {baniID && <Bani id={baniID}/>}
       </div>
     </BaniContext.Provider>
   )

@@ -13,12 +13,17 @@
     width: 100vw;
     background: var(--mainBackgroundColor);
     color: var(--mainFontColor);
+    padding: 3px 0vw;
+}
+
+.Bani {
+    overflow-x: hidden;
 }
 
 .customisations {
-    width: 96vw;
+    width: 98vw;
     height: 50px;
-    padding: 0.5rem 2vw;
+    padding: 0.5rem 1vw;
     border-bottom: 1px solid rgba(255, 255, 255, 0.74);
     overflow-x: scroll;
     display: flex;
@@ -27,7 +32,7 @@
     top: 0rem;
     z-index: 1;
     background-color: var(--mainBackgroundColor);
-    box-shadow: 2px 4px 2px black;
+    box-shadow: 2px 2px 2px black;
 }
 .customisations::-webkit-scrollbar {
     display: none;
@@ -43,14 +48,12 @@
 .bani {
     font-size: x-large;
     border-bottom: 1px solid rgba(245, 245, 245, 0.125);
-    padding: 10px;
 }
 
 .title {
     color: var(--titleFontColor);
     font-weight: 800;
     text-shadow: 1px 0.5px rgb(0, 0, 0);
-    padding: 5px;
 }
 .larivaar {
     line-break: anywhere;

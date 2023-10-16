@@ -25,13 +25,9 @@ function Main() {
 
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "*",
       element: <App />
     },
-    ...routes.map((bani) => ({
-      path: `/${bani}`,
-      element: <Bani id={bani} />
-    }))
   ]);
 
   return (
