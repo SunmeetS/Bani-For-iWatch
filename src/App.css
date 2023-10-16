@@ -1,6 +1,10 @@
+:root {
+    --mainFontColor: rgba(255, 194, 88, 0.888);
+    --mainBackgroundColor: rgba(0, 0, 0, 0.908)
+}
 .App {
-    color: rgba(255, 194, 88, 0.888);
-    background-color: rgba(0, 0, 0, 0.908);
+    color: var(--mainFontColor);
+    background-color: var(--mainBackgroundColor);
     height: 100vh;
     width: 100%;
     position: fixed;
@@ -8,6 +12,25 @@
     left: 0rem;
     overflow: scroll;
     text-align: center;
+}
+
+.customisations {
+    width: 96vw;
+    height: 50px;
+    padding: 0.5rem 2vw;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.74);
+    overflow-x: scroll;
+    display: flex;
+    align-items: center;
+}
+.customisations::-webkit-scrollbar {
+    display: none;
+}
+.customisation *{
+    color: var(--mainFontColor) !important;
+}
+.customisation {
+    margin: 15px;
 }
 
 .bani {
