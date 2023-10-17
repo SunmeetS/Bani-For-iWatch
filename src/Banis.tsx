@@ -17,17 +17,18 @@ const Banis = () => {
       {
         banis.map((bani) =>
           {  
-            let tuk = bani.gurmukhiUni;
+            let tuk = bani.gurmukhiUni, 
+            englishTuk = bani.transliteration;
             if (isLarivaar) tuk = tuk.split(' ').join('');
-            return <button
+            return <div
               onClick={() => {
                 setBaniID(bani.ID);
               }}
               style={{fontSize: fontSize}}
               key={bani.ID}
               className='bani'>
-              {isEnglish ? bani.transliteration : tuk}
-            </button>
+              {isEnglish ? englishTuk : tuk}
+            </div>
           }
         )
       } 

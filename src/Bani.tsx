@@ -15,7 +15,7 @@ const Bani = ({ id }) => {
   })
   !id ? id = useLocation().pathname.split('/')[1] : ''
   const [baniData, setBaniData] = useState({});
-  const { isLarivaar, fontSize, setBaniID, isEnglish, setIsEnglish } = useContext(BaniContext) ?? {}
+  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning } = useContext(BaniContext) ?? {}
   useEffect(() => {
     fetchBani(id).then(bani => {
       setBaniData(bani)
@@ -25,8 +25,10 @@ const Bani = ({ id }) => {
   return (
     <div className='Bani'>
       {baniData?.verses?.map(({ verse, header }, idx) => {
-        const tuk = isLarivaar ? verse.verse.unicode.replace(/ /g, '') : verse.verse.unicode;
-        const className = `bani ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}
+        const tuk = isLarivaar ? verse.verse.unicode.replace(/ /g, '') : verse.verse.unicode,
+        englishTuk = verse.transliteration.en,
+        englishMeaning = verse?.translation?.en?.ms;
+        const className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}
           ${header || idx === 0 ? 'title' : ''}`;
         return (
           <div
@@ -35,7 +37,8 @@ const Bani = ({ id }) => {
               fontSize: fontSize
             }}
           >
-            {isEnglish ? verse.transliteration.en : tuk}
+            {isEnglish ? englishTuk : tuk}
+            {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='meanings'>{englishMeaning}</p>}
           </div>
         );
       })}

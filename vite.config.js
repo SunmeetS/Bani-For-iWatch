@@ -23,17 +23,17 @@ export default defineConfig({
         name: 'Smart Gurbani',
         icons: [
           {
-            src: '/png-transparent-khanda-sikhism-religion-symbol-khanda-religious-symbol-sikh-black-and-white.png', // Provide the path to your suitable icon
-            sizes: '144x144', // Set the appropriate size
+            src: '/splashscreens/ipad_splash.png', // Provide the path to your suitable icon
+            sizes: '512x512', // Set the appropriate size
             purpose: 'any' ,
             type: 'image/png',
           },
           {
-            src: '/png-transparent-khanda-sikhism-religion-symbol-khanda-religious-symbol-sikh-black-and-white.png', // Provide the path to your suitable icon
-            sizes: '144x144', // Set the appropriate size
+            src: '/splashscreens/ipad_splash.png', // Provide the path to your suitable icon
+            sizes: '768x768', // Set the appropriate size
             purpose: 'maskable' ,
             type: 'image/png',
-          }
+          },
         ]
       }
     })

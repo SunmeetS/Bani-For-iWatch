@@ -14,7 +14,7 @@ export function saveToLS(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-export const BaniContext = createContext();
+export const BaniContext = createContext({});
 
 function App() {
 
@@ -24,15 +24,16 @@ function App() {
 
   const [isLarivaar, setIsLarivaar] = useState(false)
   let [fontSize, setFontSize] = useState(20);
+  const [showEnglishMeaning, setShowEnglishMeaning] = useState(false)
 
   const customisations = [
     <div key='displayMode' className='customisation'>
-      <Typography>Dark</Typography>
-      <Switch onClick={(e) => setMode(e.target.checked ? 'light' : 'dark')} />
-      <Typography>Light</Typography>
+      <Typography className='switch'>Dark</Typography>
+      <Switch className='switch' onClick={(e) => setMode(e.target.checked ? 'light' : 'dark')} />
+      <Typography className='switch'>Light</Typography>
     </div>,
     <div key={'larivaar'} className='customisation'>
-      <Checkbox onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
+      <Checkbox className='checkbox' onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
     </div>,
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
@@ -41,13 +42,16 @@ function App() {
         <Button onClick={() => setFontSize(fontSize - 1)}>-</Button>
       </ButtonGroup>
     </div>,
-    <div key={'larivaar'} className='customisation'>
-      <Checkbox onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
+    <div key={'isEnglish'} className='customisation'>
+      <Checkbox className='checkbox' onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
     </div>,
+    <div key={'arth'} className='customisation'>
+      <Checkbox className='checkbox' onChange={(e) => setShowEnglishMeaning(e.target.checked)} label='English Meanings' />
+  </div>,
   ]
 
 
-  const root = document.querySelector(':root');
+  const root = document.querySelector(':root') as HTMLElement;
 
   if(mode === 'dark') {
     root.style.setProperty('--mainFontColor', 'rgba(255, 193, 87, 0.888)')
@@ -77,13 +81,13 @@ function App() {
 
   return(
     <BaniContext.Provider value={{banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize, 
-    setFontSize, setShowBani, baniID, setBaniID, isEnglish, setIsEnglish}}>
+    setFontSize, setShowBani, baniID, setBaniID, isEnglish, setIsEnglish, showEnglishMeaning, setShowEnglishMeaning}}>
       <div className="App">
         <div className="customisations">
+          {baniID && <Button onClick={() => setBaniID(null)}>{'<'}</Button>}
           {
             customisations.map((ele) => ele)
           }
-          {baniID && <Button onClick={() => setBaniID(null)}>Back to All Banis</Button>}
         </div>
         {!baniID && <Banis/>}
         {baniID && <Bani id={baniID}/>}

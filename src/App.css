@@ -7,47 +7,73 @@
     top: 0rem;
     left: 0rem;
     overflow-y: scroll;
+    overflow-x: hidden;
     text-align: center;
+}
+h1, h2, h3, h4, h5, h6, p, span {
+    margin: 0rem;
+    padding: 0rem;
+}
+
+.tuk, .bani {
+    color: var(--mainFontColor);
+    padding: 3px 0vw;
 }
 .bani {
     width: 100vw;
-    background: var(--mainBackgroundColor);
-    color: var(--mainFontColor);
-    padding: 3px 0vw;
+  border-bottom: 0.1px solid var(--mainFontColor);
+}
+
+.Banis {
+    background-color: var(--mainBackgroundColor);
 }
 
 .Bani {
     overflow-x: hidden;
 }
 
+.tuk {
+    width: 90vw;
+    padding: 1vw 5vw;
+}
+
 .customisations {
-    width: 98vw;
+    width: 90vw;
     height: 50px;
-    padding: 0.5rem 1vw;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.74);
+    padding: 1vh 5vw;
+    border-bottom: 1px solid var(--mainFontColor);
     overflow-x: scroll;
+    overflow-y: hidden;
     display: flex;
     align-items: center;
     position: sticky;
     top: 0rem;
     z-index: 1;
     background-color: var(--mainBackgroundColor);
-    box-shadow: 2px 2px 2px black;
+    box-shadow: 2px 1px 1px black;
 }
 .customisations::-webkit-scrollbar {
     display: none;
 }
 .customisation *{
     color: var(--mainFontColor) !important;
+    display: flex;
+    align-items: center;
 }
 .customisation {
     margin: 15px;
     display: flex;
+    align-items: center;
 }
 
-.bani {
+.switch > * {
+    padding: 1rem;
+    margin: 0.5rem;
+    color: red;
+}
+
+.bani, .tuk {
     font-size: x-large;
-    border-bottom: 1px solid rgba(245, 245, 245, 0.125);
 }
 
 .title {
