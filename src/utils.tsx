@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { API_URL, fetcher, getFromLS } from './App';
+import { API_URL, fetcher, getFromLS, saveToLS } from './App';
 
 export type Bani = {
     ID: number;
@@ -67,8 +67,13 @@ export const GurmukhiRaagList = [
     }
     export const fetchBani = async (id: number) => {
         const baniFromLS = getFromLS('bani'+id);
-        return baniFromLS ? baniFromLS : 
-          await fetcher(API_URL + '/banis/' + id)
+        if(!baniFromLS) return await fetcher(API_URL + '/banis/' + id, setLoading, setError);
+        if(baniFromLS === 'Refetch and Save to Localstorage') {
+          const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
+          saveToLS('bani'+id, JSON.stringify(newBaniData));
+          return newBaniData;
+        }
+        return baniFromLS
     }
     export function isTitle(tuk) {
         tuk = tuk.toLowerCase();

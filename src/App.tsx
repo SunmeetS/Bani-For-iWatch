@@ -7,15 +7,30 @@ import * as React from 'react';
 import Bani from './Bani';
 
 export const API_URL = 'https://api.banidb.com/v2/'
-export async function fetcher(url) {
-  return await fetch(url).then(res => res.json());
+export async function fetcher(url, setLoading, setError) {
+  // setLoading(true);
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    // setLoading(false);
+    // setError(false);
+    return data;
+  } catch (err) {
+    // setLoading(false);
+    // setError(true);
+  }
 }
 export function saveToLS(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
 export function getFromLS(key) {
-  return JSON.parse(JSON.parse(localStorage.getItem(key)))
+  try {
+    const dataFromLS = JSON.parse(JSON.parse(localStorage.getItem(key)))
+    return dataFromLS;
+  }catch(err) {
+    return 'Refetch and Save to Localstorage';
+  }
 }
 
 export const BaniContext = createContext({});
@@ -30,13 +45,11 @@ function App() {
   let [fontSize, setFontSize] = useState(20);
   const [showEnglishMeaning, setShowEnglishMeaning] = useState(false)
 
-  setTimeout(() => {
-    for(let i = 1; i<21; i++) {
-      const currentlyPresent = getFromLS('bani' + i)
-      if(!currentlyPresent) 
-        fetchBani(i).then(bani => saveToLS('bani' + i, JSON.stringify(bani)))
-      }
-  }, 3000);
+  const { fetchBani, fetchBanis } = utils(setError, setLoading)
+  const [baniID, setBaniID] = useState()
+
+  const [isEnglish, setIsEnglish] = useState(false)
+  const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
 
   const customisations = [
     <div key='displayMode' className='customisation'>
@@ -57,9 +70,12 @@ function App() {
     <div key={'isEnglish'} className='customisation'>
       <Checkbox className='checkbox' onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
     </div>,
-    <div key={'arth'} className='customisation'>
+    <div key={'enArth'} className='customisation'>
       <Checkbox className='checkbox' onChange={(e) => setShowEnglishMeaning(e.target.checked)} label='English Meanings' />
-  </div>,
+    </div>,
+    <div key={'punArth'} className='customisation'>
+      <Checkbox className='checkbox' onChange={(e) => setShowPunjabiMeaning(e.target.checked)} label='ਗੁਰਮੁਖੀ ਅਰਥ' />
+    </div>,
   ]
 
 
@@ -82,9 +98,6 @@ function App() {
     saveToLS('--titleFontColor', 'rgba(255, 3, 3, 0.807)');
   }
 
-  const [baniID, setBaniID] = useState()
-
-  const [isEnglish, setIsEnglish] = useState(false)
 
   const [loadingData, setLoadingData] = useState(<div></div>);
   useEffect(() => {
@@ -96,21 +109,16 @@ function App() {
 
     fetchBanis().then(banis => {
       setBanis(banis)
-      setLoadingData(null)
-    }).catch(() => {
-      setLoadingData (
-    <div className='App center'>
-      <p>
-        We are unable to fetch right now. Please Try Again Later.
-      </p>
-      <br />
-      <h2>।। ਧੰਨ ਗੁਰੂ ਨਾਨਕ ।।</h2>
-      <br/>
-      <Button onClick={() => window.location.reload()}>Retry</Button>
-    </div>
-      )
-    }
-  )
+
+      setTimeout(() => {
+        for(let i = 1; i<=20; i++) {
+          const currentlyPresent = getFromLS('bani' + i)
+          if(!currentlyPresent) 
+            fetchBani(i).then(bani => {
+              if(bani) saveToLS('bani' + i, JSON.stringify(bani))})
+          }
+      }, 3000);
+    })
   }, [])
 
   if (loadingData) {
@@ -121,7 +129,8 @@ function App() {
     <BaniContext.Provider value={{
       banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize,
       setFontSize, baniID, setBaniID, isEnglish, setIsEnglish, 
-      showEnglishMeaning, setShowEnglishMeaning
+      showEnglishMeaning, setShowEnglishMeaning, loading, setLoading, 
+      error, setError, showPunjabiMeaning
     }}>
       <div className="App">
         <div className="customisations">
