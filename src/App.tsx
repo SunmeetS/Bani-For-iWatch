@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import './App.css'
 import Banis from './Banis';
-import { fetchBani, fetchBanis } from './utils';
+import { fetchBani, fetchBanis, utils } from './utils';
 import { Button, ButtonGroup, Checkbox, Link, Switch, Typography } from '@mui/joy';
 import * as React from 'react';
 import Bani from './Bani';
@@ -44,6 +44,8 @@ function App() {
   const [isLarivaar, setIsLarivaar] = useState(false)
   let [fontSize, setFontSize] = useState(20);
   const [showEnglishMeaning, setShowEnglishMeaning] = useState(false)
+  const[loading, setLoading] = useState(false);
+  const[error, setError] = useState(false);
 
   const { fetchBani, fetchBanis } = utils(setError, setLoading)
   const [baniID, setBaniID] = useState()
@@ -101,12 +103,6 @@ function App() {
 
   const [loadingData, setLoadingData] = useState(<div></div>);
   useEffect(() => {
-    setLoadingData(
-    <div className='App center'>
-      <h2>Loading...</h2>
-    </div>
-    )
-
     fetchBanis().then(banis => {
       setBanis(banis)
 
@@ -121,7 +117,7 @@ function App() {
     })
   }, [])
 
-  if (loadingData) {
+  if (loading) {
     return loadingData;
   }
 

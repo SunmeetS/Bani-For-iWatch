@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { fetchBani } from './utils';
+import { utils } from './utils';
 import { useLocation } from 'react-router-dom';
 import { Checkbox, ButtonGroup, Button } from '@mui/joy';
 import { BaniContext } from './App.jsx'

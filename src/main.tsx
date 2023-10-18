@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { Bani as BaniType, fetchBanis } from "./utils";
+import { Bani as BaniType } from "./utils";
 import Bani from "./Bani";
 import App from "./App";
 import { registerSW } from 'virtual:pwa-register'

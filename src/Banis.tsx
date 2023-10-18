@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Bani, fetchBanis } from './utils';
+import { Bani } from './utils';
 import { useNavigate } from 'react-router-dom';
 import './App.css'
 import { Switch, Typography  } from '@mui/joy';
@@ -9,9 +9,7 @@ import {BaniContext} from './App.jsx'
 
 const Banis = () => {
   const {banis, setBanis, setMode, setBaniID, fontSize, isLarivaar, isEnglish} = useContext(BaniContext);
-  const history = useNavigate();
 
-  if (!banis.length) fetchBanis().then(banis => setBanis(banis))
   return (
     <div key={'Banis'} className='Banis'>
       {

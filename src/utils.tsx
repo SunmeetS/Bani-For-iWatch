@@ -62,28 +62,21 @@ export const GurmukhiRaagList = [
     "ਨਟ"
   ];  
 
-    export async function fetchBanis() {
-        return await fetcher(API_URL + '/banis');
-    }
-    export const fetchBani = async (id: number) => {
-        const baniFromLS = getFromLS('bani'+id);
-        if(!baniFromLS) return await fetcher(API_URL + '/banis/' + id, setLoading, setError);
-        if(baniFromLS === 'Refetch and Save to Localstorage') {
-          const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
-          saveToLS('bani'+id, JSON.stringify(newBaniData));
-          return newBaniData;
-        }
-        return baniFromLS
-    }
-    export function isTitle(tuk) {
-        tuk = tuk.toLowerCase();
-      
-        for (let i = 0; i < GurmukhiRaagList.length; i++) {
-          const raag = GurmukhiRaagList[i].toLowerCase();
-          if (tuk.includes(raag)) {
-            return true; // Return true if a raag is found in the sentence
-          }
-        }
-      
-        return false;
+    export function utils (setError, setLoading){
+      async function fetchBanis() {
+          return await fetcher(API_URL + '/banis', setLoading, setError);
       }
+      const fetchBani = async (id: number) => {
+          const baniFromLS = getFromLS('bani'+id);
+          if(!baniFromLS) return await fetcher(API_URL + '/banis/' + id, setLoading, setError);
+          if(baniFromLS === 'Refetch and Save to Localstorage') {
+            const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
+            saveToLS('bani'+id, JSON.stringify(newBaniData));
+            return newBaniData;
+          }
+          return baniFromLS
+      }
+      return {
+        fetchBani, fetchBanis
+      }
+    }
