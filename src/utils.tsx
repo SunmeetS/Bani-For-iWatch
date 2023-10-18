@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { API_URL, fetcher } from './App';
+import { API_URL, fetcher, getFromLS } from './App';
 
 export type Bani = {
     ID: number;
@@ -66,7 +66,9 @@ export const GurmukhiRaagList = [
         return await fetcher(API_URL + '/banis');
     }
     export const fetchBani = async (id: number) => {
-        return await fetcher(API_URL + '/banis/' + id)
+        const baniFromLS = getFromLS('bani'+id);
+        return baniFromLS ? baniFromLS : 
+          await fetcher(API_URL + '/banis/' + id)
     }
     export function isTitle(tuk) {
         tuk = tuk.toLowerCase();

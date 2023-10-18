@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import './App.css'
 import Banis from './Banis';
-import { fetchBanis } from './utils';
+import { fetchBani, fetchBanis } from './utils';
 import { Button, ButtonGroup, Checkbox, Link, Switch, Typography } from '@mui/joy';
 import * as React from 'react';
 import Bani from './Bani';
@@ -12,6 +12,10 @@ export async function fetcher(url) {
 }
 export function saveToLS(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
+}
+
+export function getFromLS(key) {
+  return JSON.parse(JSON.parse(localStorage.getItem(key)))
 }
 
 export const BaniContext = createContext({});
@@ -25,6 +29,14 @@ function App() {
   const [isLarivaar, setIsLarivaar] = useState(false)
   let [fontSize, setFontSize] = useState(20);
   const [showEnglishMeaning, setShowEnglishMeaning] = useState(false)
+
+  setTimeout(() => {
+    for(let i = 1; i<21; i++) {
+      const currentlyPresent = getFromLS('bani' + i)
+      if(!currentlyPresent) 
+        fetchBani(i).then(bani => saveToLS('bani' + i, JSON.stringify(bani)))
+      }
+  }, 3000);
 
   const customisations = [
     <div key='displayMode' className='customisation'>
@@ -53,15 +65,15 @@ function App() {
 
   const root = document.querySelector(':root') as HTMLElement;
 
-  if(mode === 'dark') {
+  if (mode === 'dark') {
     root.style.setProperty('--mainFontColor', 'rgba(255, 193, 87, 0.888)')
     root.style.setProperty('--mainBackgroundColor', 'rgb(17 17 17)')
     root.style.setProperty('--titleFontColor', 'rgb(0, 185, 247)');
-    saveToLS('--mainFontColor', 'rgba(255, 193, 87, 0.888)') 
+    saveToLS('--mainFontColor', 'rgba(255, 193, 87, 0.888)')
     saveToLS('--mainBackgroundColor', 'rgb(17 17 17)')
     saveToLS('--titleFontColor', 'rgb(0, 185, 247)')
   }
-  if(mode === 'light') {
+  if (mode === 'light') {
     root.style.setProperty('--mainFontColor', 'rgb(17 17 17)')
     root.style.setProperty('--mainBackgroundColor', 'rgba(255, 193, 87, 0.888)')
     root.style.setProperty('--titleFontColor', 'rgba(255, 3, 3, 0.807)');
@@ -70,18 +82,47 @@ function App() {
     saveToLS('--titleFontColor', 'rgba(255, 3, 3, 0.807)');
   }
 
-  useEffect(() => {  
-    fetchBanis().then(banis => setBanis(banis))
-  }, [])  
   const [baniID, setBaniID] = useState()
-
-  const [showBani, setShowBani] = useState(false)
 
   const [isEnglish, setIsEnglish] = useState(false)
 
-  return(
-    <BaniContext.Provider value={{banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize, 
-    setFontSize, setShowBani, baniID, setBaniID, isEnglish, setIsEnglish, showEnglishMeaning, setShowEnglishMeaning}}>
+  const [loadingData, setLoadingData] = useState(<div></div>);
+  useEffect(() => {
+    setLoadingData(
+    <div className='App center'>
+      <h2>Loading...</h2>
+    </div>
+    )
+
+    fetchBanis().then(banis => {
+      setBanis(banis)
+      setLoadingData(null)
+    }).catch(() => {
+      setLoadingData (
+    <div className='App center'>
+      <p>
+        We are unable to fetch right now. Please Try Again Later.
+      </p>
+      <br />
+      <h2>।। ਧੰਨ ਗੁਰੂ ਨਾਨਕ ।।</h2>
+      <br/>
+      <Button onClick={() => window.location.reload()}>Retry</Button>
+    </div>
+      )
+    }
+  )
+  }, [])
+
+  if (loadingData) {
+    return loadingData;
+  }
+
+  return (
+    <BaniContext.Provider value={{
+      banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize,
+      setFontSize, baniID, setBaniID, isEnglish, setIsEnglish, 
+      showEnglishMeaning, setShowEnglishMeaning
+    }}>
       <div className="App">
         <div className="customisations">
           {baniID && <Button onClick={() => setBaniID(null)}>{'<'}</Button>}
@@ -89,8 +130,8 @@ function App() {
             customisations.map((ele) => ele)
           }
         </div>
-        {!baniID && <Banis/>}
-        {baniID && <Bani id={baniID}/>}
+        {!baniID && <Banis />}
+        {baniID && <Bani id={baniID} />}
       </div>
     </BaniContext.Provider>
   )
