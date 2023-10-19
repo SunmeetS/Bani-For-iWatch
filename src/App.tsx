@@ -43,7 +43,7 @@ function App() {
   const [mode, setMode] = useState('light')
 
   const [isLarivaar, setIsLarivaar] = useState(false)
-  let [fontSize, setFontSize] = useState(20);
+  let [fontSize, setFontSize] = useState(24);
   const [showEnglishMeaning, setShowEnglishMeaning] = useState(false)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -53,7 +53,7 @@ function App() {
 
   const [isEnglish, setIsEnglish] = useState(false)
   const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
-  const [scrolling, setScrolling] = useState({status: false, speed: 5});
+  const [scrolling, setScrolling] = useState({status: false, speed: 1});
 
   useEffect(() => {
     let interval;
@@ -64,8 +64,8 @@ function App() {
           appRef?.current.scrollBy({
             top: scrolling.speed,
             behavior: 'smooth'
-          });
-        }, 100);
+          });      
+        }, 50);
       }
     } else {
       if (interval) {

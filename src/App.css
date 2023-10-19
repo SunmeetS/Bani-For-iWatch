@@ -26,6 +26,7 @@ h1, h2, h3, h4, h5, h6, p, span {
 .bani {
     width: 100vw;
     border-bottom: 0.1px solid var(--mainFontColor);
+    cursor: pointer;
 }
 
 .center {
