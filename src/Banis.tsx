@@ -13,7 +13,7 @@ const Banis = () => {
   return (
     <div key={'Banis'} className='Banis'>
       {
-        banis.map((bani) =>
+        banis?.map((bani) =>
           {  
             let tuk = bani.gurmukhiUni, 
             englishTuk = bani.transliteration;

@@ -62,19 +62,44 @@ export const GurmukhiRaagList = [
     "ਨਟ"
   ];  
 
-    export function utils (setError, setLoading){
+export const debounce = (func, delay) => {
+  let timer;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(context, args);
+    }, delay);
+  };
+};
+
+export const throttle = (func, limit) => {
+  let inThrottle;
+  return function () {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+};
+
+    export function utils(setError, setLoading) {
       async function fetchBanis() {
-          return await fetcher(API_URL + '/banis', setLoading, setError);
+        return await fetcher(API_URL + '/banis', setLoading, setError);
       }
       const fetchBani = async (id: number) => {
-          const baniFromLS = getFromLS('bani'+id);
-          if(!baniFromLS) return await fetcher(API_URL + '/banis/' + id, setLoading, setError);
-          if(baniFromLS === 'Refetch and Save to Localstorage') {
-            const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
-            saveToLS('bani'+id, JSON.stringify(newBaniData));
-            return newBaniData;
-          }
-          return baniFromLS
+        const baniFromLS = getFromLS('bani' + id);
+        if (!baniFromLS) return await fetcher(API_URL + '/banis/' + id, setLoading, setError);
+        if (baniFromLS === 'Refetch and Save to Localstorage') {
+          const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
+          saveToLS('bani' + id, JSON.stringify(newBaniData));
+          return newBaniData;
+        }
+        return baniFromLS
       }
       return {
         fetchBani, fetchBanis

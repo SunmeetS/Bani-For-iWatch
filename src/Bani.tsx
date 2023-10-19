@@ -45,8 +45,8 @@ const Bani = ({ id }) => {
           >
             {isEnglish ? englishTuk : tuk}
           <div className="meaningsGroup">
-              {showEnglishMeaning && <p style={{fontSize: fontSize/2, color: 'lightcyan'}} className='meanings'>{englishMeaning}</p>}
-              {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5, color: 'lightGreen'}} className='meanings'>{punjabiMeaning}</p>}
+              {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
+              {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5}} className='gurmukhiMeanings'>{punjabiMeaning}</p>}
             </div>
           </div>
         );

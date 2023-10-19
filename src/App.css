@@ -1,3 +1,7 @@
+* {
+    font-weight: var(--fontWeight);
+}
+
 .App {
     color: var(--mainFontColor);
     background-color: var(--mainBackgroundColor);
@@ -48,7 +52,6 @@ h1, h2, h3, h4, h5, h6, p, span {
     width: 90vw;
     height: 50px;
     padding: 1vh 5vw;
-    border-bottom: 1px solid var(--mainFontColor);
     overflow-x: scroll;
     overflow-y: hidden;
     display: flex;
@@ -56,16 +59,18 @@ h1, h2, h3, h4, h5, h6, p, span {
     position: sticky;
     top: 0rem;
     z-index: 1;
-    background-color: var(--mainBackgroundColor);
-    box-shadow: 2px 1px 1px black;
+    background-color: var(--headerBackgroundColor);
+    box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.224);
+    transition: 0.5s all;
 }
 .customisations::-webkit-scrollbar {
     display: none;
 }
 .customisation *{
-    color: var(--mainFontColor) !important;
+    color: white !important;
     display: flex;
     align-items: center;
+    font-weight: 600;
 }
 .customisation {
     margin: 15px;
@@ -90,4 +95,15 @@ h1, h2, h3, h4, h5, h6, p, span {
 }
 .larivaar {
     line-break: anywhere;
+}
+
+.meaningsGroup > * {
+    font-weight: 400;
+}
+
+.englishMeanings {
+    color: var(--englishMeaningsFontColor)
+}
+.gurmukhiMeanings {
+    color: var(--gurmukhiMeaningsFontColor)
 }
