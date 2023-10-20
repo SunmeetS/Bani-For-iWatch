@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import './App.css'
 import Banis from './Banis';
 import { debounce, fetchBani, fetchBanis, throttle, utils } from './utils';
-import { Button, ButtonGroup, Checkbox, Link, Switch, Typography } from '@mui/joy';
+import { Button, ButtonGroup, Checkbox, Input, Link, Switch, Typography } from '@mui/joy';
 import * as React from 'react';
 import Bani from './Bani';
 
@@ -53,7 +53,8 @@ function App() {
 
   const [isEnglish, setIsEnglish] = useState(false)
   const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
-  const [scrolling, setScrolling] = useState({status: false, speed: 1});
+  const [scrolling, setScrolling] = useState({status: false, speed: 100});
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     let interval;
@@ -81,6 +82,9 @@ function App() {
   }, [scrolling.status, scrolling.speed]);
 
   const customisations = [
+    <div style={{display: !baniID ? 'flex' : 'none'}}>
+      <Input placeholder="Search..." onChange={(e) => debounce(setSearch(e.target.value.split(' ').join('')), 1000)}/>
+    </div>,
     <div key='displayMode' className='customisation'>
       <Typography className='switch'>Dark</Typography>
       <Switch className='switch' checked={mode === 'light'} onClick={(e) => setMode(e.target.checked ? 'light' : 'dark')} />
@@ -194,7 +198,7 @@ function App() {
       banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize,
       setFontSize, baniID, setBaniID, isEnglish, setIsEnglish,
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
-      error, setError, showPunjabiMeaning
+      error, setError, showPunjabiMeaning, search, setSearch
     }}>
       <div ref={appRef} className="App">
         <div className="customisations">

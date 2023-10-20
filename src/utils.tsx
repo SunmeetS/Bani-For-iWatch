@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { API_URL, fetcher, getFromLS, saveToLS } from './App';
 
 export type Bani = {
@@ -73,6 +72,10 @@ export const debounce = (func, delay) => {
     }, delay);
   };
 };
+export function isGurmukhiWord(word) {
+  const gurmukhiRegExp = /^[\u0A00-\u0A7F]+$/;
+  return gurmukhiRegExp.test(word);
+}
 
 export const throttle = (func, limit) => {
   let inThrottle;
