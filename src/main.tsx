@@ -11,9 +11,7 @@ import { Button, ButtonGroup, Checkbox, Switch, Typography } from "@mui/joy";
 
 function Main() {
   const updateSW = registerSW({
-    onOfflineReady() {
-      alert('You can now download this App.')
-    },
+    onOfflineReady() {},
   })
 
   updateSW()

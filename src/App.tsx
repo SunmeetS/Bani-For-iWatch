@@ -60,6 +60,15 @@ function App() {
   const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
   const [scrolling, setScrolling] = useState({status: false, speed: 100});
   const [search, setSearch] = useState('');
+  const [installationPrompt, showInstallationPrompt] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<Event>();
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    setDeferredPrompt(e);
+    showInstallationPrompt(true);
+    console.log(`'beforeinstallprompt' event was fired.`);
+  });
 
   useEffect(() => {
     let interval;
@@ -87,6 +96,9 @@ function App() {
   }, [scrolling.status, scrolling.speed]);
 
   const customisations = [
+    <Button className='customisation' style={{display: installationPrompt ? 'block' : 'none', margin: 'auto'}} onClick={()=>{deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false)}}>
+      Install This App
+    </Button>,
     <div style={{display: !baniID ? 'flex' : 'none'}}>
       <Input placeholder="Search..." onChange={(e) => debounce(setSearch(e.target.value.split(' ').join('')), 1000)}/>
     </div>,
