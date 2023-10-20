@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import './App.css'
 import Banis from './Banis';
-import { debounce, fetchBani, fetchBanis, throttle, utils } from './utils';
+import { Bani as BaniType, debounce, fetchBani, fetchBanis, throttle, utils } from './utils';
 import { Button, ButtonGroup, Checkbox, CircularProgress, Input, Link, Switch, Typography } from '@mui/joy';
 import * as React from 'react';
 import Bani from './Bani';
@@ -22,7 +22,11 @@ export async function fetcher(url, setLoading, setError) {
   }
 }
 export function saveToLS(key, value) {
-  localStorage.setItem(key, JSON.stringify(value))
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch(err) {
+    console.log(err)
+  }
 }
 
 export function getFromLS(key) {
@@ -169,7 +173,7 @@ function App() {
         saveToLS('banisList', JSON.stringify(banis));
 
         setTimeout(() => {
-          (banis).map((bani) => {
+          (banis as BaniType[]).slice(0, 30).map((bani) => {
             const {ID} = bani
             const currentlyPresent = getFromLS('bani' + ID);
             if (!currentlyPresent)
