@@ -126,7 +126,7 @@ function App() {
 
   if (mode === 'dark') {
     root.style.setProperty('--mainFontColor', 'rgba(255, 193, 87, 0.888)')
-    root.style.setProperty('--mainBackgroundColor', 'rgb(17 17 17)')
+    root.style.setProperty('--mainBackgroundColor', 'rgb(0 10 36)')
     root.style.setProperty('--titleFontColor', 'rgb(0, 185, 247)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', 'lightGreen')
     root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
