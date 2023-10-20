@@ -21,7 +21,7 @@ dependencies:
     specifier: ^3.0.0
     version: 3.0.0
   Stack:
-    specifier: link:@mui/material/Stack
+    specifier: '@mui/material/Stack'
     version: link:@mui/material/Stack
   pnpm:
     specifier: ^8.9.2
