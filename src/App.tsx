@@ -30,7 +30,7 @@ export function getFromLS(key) {
     const dataFromLS = JSON.parse(JSON.parse(localStorage.getItem(key)))
     return dataFromLS;
   } catch (err) {
-    return 'Refetch and Save to Localstorage';
+    return;
   }
 }
 

@@ -96,8 +96,7 @@ export const throttle = (func, limit) => {
       }
       const fetchBani = async (id: number) => {
         const baniFromLS = getFromLS('bani' + id);
-        if (!baniFromLS) return await fetcher(API_URL + '/banis/' + id, setLoading, setError);
-        if (baniFromLS === 'Refetch and Save to Localstorage') {
+        if (!baniFromLS) {
           const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
           saveToLS('bani' + id, JSON.stringify(newBaniData));
           return newBaniData;
