@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import './App.css'
 import Banis from './Banis';
 import { debounce, fetchBani, fetchBanis, throttle, utils } from './utils';
-import { Button, ButtonGroup, Checkbox, Input, Link, Switch, Typography } from '@mui/joy';
+import { Button, ButtonGroup, Checkbox, CircularProgress, Input, Link, Switch, Typography } from '@mui/joy';
 import * as React from 'react';
 import Bani from './Bani';
 
@@ -16,6 +16,7 @@ export async function fetcher(url, setLoading, setError) {
     // setError(false);
     return data;
   } catch (err) {
+    console.log(err)
     // setLoading(false);
     // setError(true);
   }
@@ -161,19 +162,26 @@ function App() {
   }, [scrollPosition])
 
   useEffect(() => {
-    fetchBanis().then(banis => {
-      setBanis(banis)
+    const savedBanis = getFromLS('banisList')
+    if(!savedBanis) {
+      fetchBanis().then(banis => {
+        setBanis(banis)
+        saveToLS('banisList', JSON.stringify(banis));
 
-      setTimeout(() => {
-        for (let i = 1; i <= 20; i++) {
-          const currentlyPresent = getFromLS('bani' + i)
-          if (!currentlyPresent)
-            fetchBani(i).then(bani => {
-              if (bani) saveToLS('bani' + i, JSON.stringify(bani))
+        setTimeout(() => {
+          (banis).map((bani) => {
+            const {ID} = bani
+            const currentlyPresent = getFromLS('bani' + ID);
+            if (!currentlyPresent)
+              fetchBani(ID).then(bani => {
+                if (bani) saveToLS('bani' + ID, JSON.stringify(bani))
+              })
             })
-        }
-      }, 3000);
-
+          }, 3000);
+        })
+      } else {
+        setBanis((savedBanis))
+      }
       const throttledScroll = throttle((e) => {
         setScrollPosition((val) => {
           return {
@@ -186,11 +194,10 @@ function App() {
       appRef.current.focus();
       appRef?.current.addEventListener('scroll', throttledScroll)
 
-    })
   }, [])
 
   if (loading) {
-    return loadingData;
+    return <CircularProgress color='success'/>;
   }
 
   return (
