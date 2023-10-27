@@ -1,10 +1,12 @@
 import { createContext, useEffect, useState } from 'react';
-import './App.css'
+import './App.less'
 import Banis from './Banis';
 import { Bani as BaniType, debounce, fetchBani, fetchBanis, throttle, utils } from './utils';
 import { Button, ButtonGroup, Checkbox, CircularProgress, Input, Link, Switch, Typography } from '@mui/joy';
 import * as React from 'react';
 import Bani from './Bani';
+import Index from './Index';
+import Presenter from './Presenter';
 
 export const API_URL = 'https://api.banidb.com/v2/'
 export async function fetcher(url, setLoading, setError) {
@@ -24,7 +26,7 @@ export async function fetcher(url, setLoading, setError) {
 export function saveToLS(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value))
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
@@ -41,7 +43,7 @@ export function getFromLS(key) {
 export const BaniContext = createContext({});
 
 function App() {
-  const appRef = React.useRef(null)
+  const appRef = React.useRef()
 
   const [banis, setBanis] = useState([]);
 
@@ -58,10 +60,11 @@ function App() {
 
   const [isEnglish, setIsEnglish] = useState(false)
   const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
-  const [scrolling, setScrolling] = useState({status: false, speed: 100});
+  const [scrolling, setScrolling] = useState({ status: false, speed: 100 });
   const [search, setSearch] = useState('');
   const [installationPrompt, showInstallationPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<Event>();
+  const [presenterMode, setPresenterMode] = useState(false);
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -96,11 +99,11 @@ function App() {
   }, [scrolling.status, scrolling.speed]);
 
   const customisations = [
-    <Button className='customisation' style={{display: installationPrompt ? 'block' : 'none', margin: 'auto'}} onClick={()=>{deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false)}}>
+    <Button className='customisation' style={{ display: installationPrompt ? 'block' : 'none', margin: 'auto' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
       Install This App
     </Button>,
-    <div style={{display: !baniID ? 'flex' : 'none'}}>
-      <Input placeholder="Search..." onChange={(e) => debounce(setSearch(e.target.value.split(' ').join('')), 1000)}/>
+    <div>
+      <Input placeholder="Search..." onChange={(e) => debounce(setSearch(e.target.value.split(' ').join('')), 1000)} />
     </div>,
     <div key='displayMode' className='customisation'>
       <Typography className='switch'>Dark</Typography>
@@ -108,7 +111,7 @@ function App() {
       <Typography className='switch'>Light</Typography>
     </div>,
     <div key={'larivaar'} className='customisation'>
-      <Checkbox className='checkbox' onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
+      <Checkbox checked={isLarivaar} className='checkbox' onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
     </div>,
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
@@ -118,26 +121,35 @@ function App() {
       </ButtonGroup>
     </div>,
     <div key={'isEnglish'} className='customisation'>
-      <Checkbox className='checkbox' onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
+      <Checkbox checked={isEnglish} className='checkbox' onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
     </div>,
-    <div style={{display: baniID ? 'flex' : 'none'}} key={'enArth'} className='customisation'>
-      <Checkbox className='checkbox' onChange={(e) => setShowEnglishMeaning(e.target.checked)} label='English Meanings' />
+    <div style={{ display: baniID ? 'flex' : 'none' }} key={'enArth'} className='customisation'>
+      <Checkbox checked={showEnglishMeaning} className='checkbox' onChange={(e) => setShowEnglishMeaning(e.target.checked)} label='English Meanings' />
     </div>,
-    <div style={{display: baniID ? 'flex' : 'none'}} key={'punArth'} className='customisation'>
-      <Checkbox className='checkbox' onChange={(e) => setShowPunjabiMeaning(e.target.checked)} label='ਗੁਰਮੁਖੀ ਅਰਥ' />
+    <div style={{ display: baniID ? 'flex' : 'none' }} key={'punArth'} className='customisation'>
+      <Checkbox checked = {showPunjabiMeaning} className='checkbox' onChange={(e) => setShowPunjabiMeaning(e.target.checked)} label='ਗੁਰਮੁਖੀ ਅਰਥ' />
     </div>,
-    <div style={{display: baniID ? 'flex' : 'none'}} key={'autoScroll'} className='customisation'>
-      <Checkbox className='checkbox' onChange={(e) => setScrolling({...scrolling, status: e.target.checked})} label='Auto Scroll' />
+    <div style={{ display: baniID ? 'flex' : 'none' }} key={'autoScroll'} className='customisation'>
+      <Checkbox checked={scrolling.status} className='checkbox' onChange={(e) => setScrolling({ ...scrolling, status: e.target.checked })} label='Auto Scroll' />
     </div>,
-    <div style={{display: scrolling.status ? 'flex' : 'none'}} key={'scrollSpeed'} className='customisation'>
+    <div style={{ display: scrolling.status ? 'flex' : 'none' }} key={'scrollSpeed'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Scroll Speed">
-        <Button onClick={() => setScrolling({...scrolling, speed: scrolling.speed + 1})}>+</Button>
+        <Button onClick={() => setScrolling({ ...scrolling, speed: scrolling.speed + 1 })}>+</Button>
         <Button >{scrolling.speed}</Button>
-        <Button onClick={() => setScrolling({...scrolling, speed: scrolling.speed - 1})}>-</Button>
+        <Button onClick={() => setScrolling({ ...scrolling, speed: scrolling.speed - 1 })}>-</Button>
       </ButtonGroup>
+    </div>,
+    <div style={{ display: baniID ? 'flex' : 'none' }} key={'presenterMode'} className='customisation'>
+      <Checkbox checked={presenterMode} className='checkbox' onChange={(e) => {
+        setPresenterMode(() => {
+            return e.target.checked
+          }
+          );
+      }} label='Presenter Mode' />
     </div>,
   ]
 
+  fetcher(API_URL + 'hukamnamas/today', setLoading, setError).then(res => console.log(res))
 
   const root = document.querySelector(':root') as HTMLElement;
 
@@ -147,12 +159,12 @@ function App() {
     root.style.setProperty('--titleFontColor', 'rgb(0, 185, 247)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', 'lightGreen')
     root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
-    root.style.setProperty('--fontWeight', '400')
+    root.style.setProperty('--fontWeight', '400');
   }
   if (mode === 'light') {
     root.style.setProperty('--mainFontColor', '#1a00ba')
     root.style.setProperty('--mainBackgroundColor', '#d5d5b1')
-    root.style.setProperty('--titleFontColor', 'rgba(255, 3, 3, 0.807)');
+    root.style.setProperty('--titleFontColor', 'rgb(175 0 192 / 81%)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', '#8d2773d9')
     root.style.setProperty('--englishMeaningsFontColor', '#056700');
     root.style.setProperty('--fontWeight', '600')
@@ -176,44 +188,56 @@ function App() {
 
     header.style.opacity = setOpacity()
   }, [scrollPosition])
+  useEffect(() => {
+    if(presenterMode) {
+      document.documentElement.requestFullscreen();
+      setFontSize(40);
+      setShowEnglishMeaning(true);
+      setShowPunjabiMeaning(true);
+    }
+    else {
+      document.exitFullscreen()
+      setFontSize(24);
+    }
+  }, [presenterMode])
 
   useEffect(() => {
     const savedBanis = getFromLS('banisList')
-    if(!savedBanis) {
+    if (!savedBanis) {
       fetchBanis().then(banis => {
         setBanis(banis)
         saveToLS('banisList', JSON.stringify(banis));
 
         setTimeout(() => {
           (banis as BaniType[]).slice(0, 30).map((bani) => {
-            const {ID} = bani
+            const { ID } = bani
             const currentlyPresent = getFromLS('bani' + ID);
             if (!currentlyPresent)
               fetchBani(ID).then(bani => {
                 if (bani) saveToLS('bani' + ID, JSON.stringify(bani))
               })
-            })
-          }, 3000);
-        })
-      } else {
-        setBanis((savedBanis))
-      }
-      const throttledScroll = throttle((e) => {
-        setScrollPosition((val) => {
-          return {
-            prev: val.current,
-            current: e.target.scrollTop
-          }
-        });
-      }, 100)
+          })
+        }, 3000);
+      })
+    } else {
+      setBanis((savedBanis))
+    }
+    const throttledScroll = throttle((e) => {
+      setScrollPosition((val) => {
+        return {
+          prev: val.current,
+          current: e.target.scrollTop
+        }
+      });
+    }, 100)
 
-      appRef.current.focus();
-      appRef?.current.addEventListener('scroll', throttledScroll)
+    appRef.current.focus();
+    appRef?.current.addEventListener('scroll', throttledScroll)
 
   }, [])
 
   if (loading) {
-    return <CircularProgress color='success'/>;
+    return <CircularProgress color='success' />;
   }
 
   return (
@@ -221,7 +245,7 @@ function App() {
       banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize,
       setFontSize, baniID, setBaniID, isEnglish, setIsEnglish,
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
-      error, setError, showPunjabiMeaning, search, setSearch
+      error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode
     }}>
       <div ref={appRef} className="App">
         <div className="customisations">
@@ -230,8 +254,10 @@ function App() {
             customisations?.map((ele) => ele)
           }
         </div>
+        {/* <Index/> */}
         {!baniID && <Banis />}
         {baniID && <Bani id={baniID} />}
+        {/* {baniID && <Presenter id={baniID} />} */}
       </div>
     </BaniContext.Provider>
   )

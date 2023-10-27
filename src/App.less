@@ -2,6 +2,15 @@
     font-weight: var(--fontWeight);
 }
 
+@padding-sm: 0.5rem;
+@padding-md: 1rem;
+@padding-lg: 1.5rem;
+
+:root {
+    --headerHeight: 50px
+}
+
+
 .App {
     color: var(--mainFontColor);
     background-color: var(--mainBackgroundColor);
@@ -10,7 +19,7 @@
     position: fixed;
     top: 0rem;
     left: 0rem;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     text-align: center;
 }
@@ -21,7 +30,7 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .tuk, .bani {
     color: var(--mainFontColor);
-    padding: 3px 0vw;
+    padding: @padding-sm 0vw;
 }
 .bani {
     width: 100vw;
@@ -36,12 +45,32 @@ h1, h2, h3, h4, h5, h6, p, span {
     flex-direction: column;
 }
 
+.presenter {
+    display: flex;
+    height: 80vh;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    scroll-snap-align: center;
+    >* {
+        margin: 1rem
+    };
+}
+
+.index {
+    height: 80%;
+}
+
 .Banis {
     background-color: var(--mainBackgroundColor);
+    height: calc(100vh - var(--headerHeight) - 10px);
+    overflow: scroll;
 }
 
 .Bani {
-    overflow-x: hidden;
+    height: calc(100vh - var(--headerHeight) + 1vh);
+    overflow-x: scroll;
+    scroll-snap-type: y mandatory;
 }
 
 .tuk {
@@ -51,7 +80,7 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .customisations {
     width: 90vw;
-    height: 50px;
+    height: var(--headerHeight);
     padding: 1vh 5vw;
     overflow-x: scroll;
     overflow-y: hidden;
