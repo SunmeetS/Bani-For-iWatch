@@ -93,7 +93,18 @@ export const throttle = (func, limit) => {
 export function removeMatras(text) {
   var matraPattern = /[\u0A3E-\u0A4B\u0A66-\u0A75]/g;
   var textWithoutMatras = text.replace(matraPattern, '');
-  return textWithoutMatras;
+  return textWithoutMatras as string;
+}
+export function getFirstLetters(text) {
+  const words = text.split(' ');
+  const firstLetters = [];
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    if (word.length > 0) {
+      firstLetters.push(word[0]);
+    }
+  }
+  return firstLetters;
 }
 
 

@@ -7,6 +7,7 @@ import * as React from 'react';
 import Bani from './Bani';
 import Index from './Index';
 import Presenter from './Presenter';
+import {toUnicode} from 'gurmukhi-utils'
 
 export const API_URL = 'https://api.banidb.com/v2/'
 export async function fetcher(url, setLoading, setError) {
@@ -98,12 +99,21 @@ function App() {
     };
   }, [scrolling.status, scrolling.speed]);
 
+  const handleInputChange = (e) => {
+    const inputText = e.target.value;
+    const gurmukhiText = toUnicode(inputText);
+    setSearch(gurmukhiText);
+  };
+
   const customisations = [
     <Button className='customisation' style={{ display: installationPrompt ? 'block' : 'none', margin: 'auto' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
       Install This App
     </Button>,
     <div>
-      <Input placeholder="Search..." onChange={(e) => debounce(setSearch(e.target.value.split(' ').join('')), 1000)} />
+      <Input placeholder="Search..." value={search} onChange={(e) => {
+        setSearch(e.target.value.split(' ').join(''));
+        handleInputChange(e)
+      }} />
     </div>,
     <div key='displayMode' className='customisation'>
       <Typography className='switch'>Dark</Typography>
@@ -149,7 +159,7 @@ function App() {
     </div>,
   ]
 
-  fetcher(API_URL + 'hukamnamas/today', setLoading, setError).then(res => console.log(res))
+  // fetcher(API_URL + 'hukamnamas/today', setLoading, setError).then(res => console.log(res))
 
   const root = document.querySelector(':root') as HTMLElement;
 
