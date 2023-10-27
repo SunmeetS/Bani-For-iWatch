@@ -200,13 +200,13 @@ function App() {
   }, [scrollPosition])
   useEffect(() => {
     if(presenterMode) {
-      document.documentElement.requestFullscreen();
+      document.documentElement?.requestFullscreen?.();
       setFontSize(40);
       setShowEnglishMeaning(true);
       setShowPunjabiMeaning(true);
     }
     else {
-      document.exitFullscreen()
+      document.exitFullscreen?.()
       setFontSize(24);
     }
   }, [presenterMode])
