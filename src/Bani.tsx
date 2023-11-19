@@ -13,15 +13,45 @@ const Bani = ({ id }) => {
   })
   !id ? id = useLocation().pathname.split('/')[1] : ''
   const [baniData, setBaniData] = useState({verses: []});
-  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, showPunjabiMeaning, presenterMode, search, setSearch } = useContext(BaniContext) ?? {}
+  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, 
+  showPunjabiMeaning, presenterMode, search, opacity, setOpacity, throttledScroll, scrollPosition, 
+  setScrollPosition, scrolling, setScrolling } = useContext(BaniContext) ?? {}
   const {fetchBani} = utils(setError, setLoading);
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
+  const [larivaarAssist, setLarivaarAssist] = useState(false)
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    let interval;
+  
+    if (scrolling.status) {
+      if (!interval) {
+        interval = setInterval(() => {
+          containerRef?.current.scrollBy({
+            top: scrolling.speed,
+            behavior: 'smooth'
+          });      
+        }, 50);
+      }
+    } else {
+      if (interval) {
+        clearInterval(interval);
+        interval = null; 
+      }
+    }
+      return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [scrolling.status, scrolling.speed]);
 
   useEffect(() => {
     fetchBani(id).then(bani => {
       setBaniData(bani)
     })
+    containerRef?.current?.focus();
+    containerRef?.current?.addEventListener('scroll', throttledScroll)
   }, [])
 
   useEffect(() => {
@@ -33,8 +63,8 @@ const Bani = ({ id }) => {
       const shabadChildren: (HTMLElement | undefined)[] = containerRef.current.children
       const prevShabad = shabadChildren[foundShabadIndex?.previous] ?? {style: {}}
       const shabadElement = shabadChildren[foundShabadIndex?.current];
-      prevShabad.style.backdropFilter = 'brightness(100%)'
-      shabadElement.style.backdropFilter = 'brightness(60%)'
+      prevShabad.style.border = '0px'
+      shabadElement.style.border = '3px dashed #5b4bb9'
       if (shabadElement) {
         shabadElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -55,11 +85,10 @@ const Bani = ({ id }) => {
     }
   };
 
-
   return (
     <div className='Bani' ref={containerRef}>
       {baniData?.verses?.map(({ verse, header }, idx) => {
-        const tuk = isLarivaar ? verse.verse.unicode.replace(/ /g, '') : verse.verse.unicode,
+        const tuk = verse.verse.unicode.split(' '),
         englishTuk = verse.transliteration.en,
         {bdb: en1, ms: en2, ssk: en3} = verse?.translation?.en ?? {},
         englishMeaning = en1 ?? en2 ?? en3 ;
@@ -76,7 +105,18 @@ const Bani = ({ id }) => {
               fontSize: fontSize
             }}
           >
-            <span>{isEnglish ? englishTuk : tuk}</span>
+            <h4 onClick={() => {
+              if(isLarivaar) {
+                setLarivaarAssist(true);
+                setTimeout(() => {
+                  setLarivaarAssist(false)
+                }, 2000);
+              }
+            }}>
+              {isEnglish ? englishTuk: tuk.map((ele) => 
+              <span style={
+              {marginRight: larivaarAssist && '10px', transition: 'margin 1s'}}>{ele + (!isLarivaar ? " " : '')}</span>)}
+            </h4>
           <div className="meaningsGroup">
               {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
               {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5}} className='gurmukhiMeanings'>{punjabiMeaning}</p>}

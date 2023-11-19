@@ -48,11 +48,11 @@ function App() {
 
   const [banis, setBanis] = useState([]);
 
-  const [mode, setMode] = useState('light')
+  const [mode, setMode] = useState('dark')
 
   const [isLarivaar, setIsLarivaar] = useState(false)
-  let [fontSize, setFontSize] = useState(24);
-  const [showEnglishMeaning, setShowEnglishMeaning] = useState(false)
+  let [fontSize, setFontSize] = useState(34);
+  const [showEnglishMeaning, setShowEnglishMeaning] = useState(true)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -61,7 +61,7 @@ function App() {
 
   const [isEnglish, setIsEnglish] = useState(false)
   const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
-  const [scrolling, setScrolling] = useState({ status: false, speed: 100 });
+  const [scrolling, setScrolling] = useState({ status: false, speed: 10 });
   const [search, setSearch] = useState('');
   const [installationPrompt, showInstallationPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<Event>();
@@ -73,31 +73,6 @@ function App() {
     showInstallationPrompt(true);
     console.log(`'beforeinstallprompt' event was fired.`);
   });
-
-  useEffect(() => {
-    let interval;
-  
-    if (scrolling.status) {
-      if (!interval) {
-        interval = setInterval(() => {
-          appRef?.current.scrollBy({
-            top: scrolling.speed,
-            behavior: 'smooth'
-          });      
-        }, 50);
-      }
-    } else {
-      if (interval) {
-        clearInterval(interval);
-        interval = null; 
-      }
-    }
-      return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [scrolling.status, scrolling.speed]);
 
   const handleInputChange = (e) => {
     const inputText = e.target.value;
@@ -112,7 +87,7 @@ function App() {
     <div>
       <Input placeholder="Search..." value={search} onChange={(e) => {
         setSearch(e.target.value.split(' ').join(''));
-        handleInputChange(e)
+        handleInputChange(e);
       }} />
     </div>,
     <div key='displayMode' className='customisation'>
@@ -169,15 +144,13 @@ function App() {
     root.style.setProperty('--titleFontColor', 'rgb(0, 185, 247)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', 'lightGreen')
     root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
-    root.style.setProperty('--fontWeight', '400');
   }
   if (mode === 'light') {
     root.style.setProperty('--mainFontColor', '#1a00ba')
-    root.style.setProperty('--mainBackgroundColor', '#d5d5b1')
+    root.style.setProperty('--mainBackgroundColor', '#e8e8e8')
     root.style.setProperty('--titleFontColor', 'rgb(175 0 192 / 81%)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', '#8d2773d9')
     root.style.setProperty('--englishMeaningsFontColor', '#056700');
-    root.style.setProperty('--fontWeight', '600')
   }
   root.style.setProperty('--headerBackgroundColor', 'rgb(195 87 255)');
 
@@ -207,9 +180,18 @@ function App() {
     }
     else {
       document.exitFullscreen?.()
-      setFontSize(24);
+      setFontSize(34);
     }
   }, [presenterMode])
+
+  const throttledScroll = throttle((e) => {
+    setScrollPosition((val) => {
+      return {
+        prev: val.current,
+        current: e.target.scrollTop
+      }
+    });
+  }, 100)
 
   useEffect(() => {
     const savedBanis = getFromLS('banisList')
@@ -232,17 +214,6 @@ function App() {
     } else {
       setBanis((savedBanis))
     }
-    const throttledScroll = throttle((e) => {
-      setScrollPosition((val) => {
-        return {
-          prev: val.current,
-          current: e.target.scrollTop
-        }
-      });
-    }, 100)
-
-    appRef.current.focus();
-    appRef?.current.addEventListener('scroll', throttledScroll)
 
   }, [])
 
@@ -255,7 +226,8 @@ function App() {
       banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize,
       setFontSize, baniID, setBaniID, isEnglish, setIsEnglish,
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
-      error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode
+      error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
+      setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling
     }}>
       <div ref={appRef} className="App">
         <div className="customisations">
