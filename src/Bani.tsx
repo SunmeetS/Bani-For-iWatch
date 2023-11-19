@@ -18,7 +18,7 @@ const Bani = ({ id }) => {
   setScrollPosition, scrolling, setScrolling } = useContext(BaniContext) ?? {}
   const {fetchBani} = utils(setError, setLoading);
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
-  const [larivaarAssist, setLarivaarAssist] = useState(false)
+  const [larivaarAssist, setLarivaarAssist] = useState({state: false, lineIndex: 0})
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -105,17 +105,21 @@ const Bani = ({ id }) => {
               fontSize: fontSize
             }}
           >
-            <h4 onClick={() => {
+            <h4 onClick={() => {              
               if(isLarivaar) {
-                setLarivaarAssist(true);
+                setLarivaarAssist({lineIndex: idx, state: true});
                 setTimeout(() => {
-                  setLarivaarAssist(false)
+                  setLarivaarAssist({lineIndex: null, state: false})
                 }, 2000);
               }
             }}>
               {isEnglish ? englishTuk: tuk.map((ele) => 
               <span style={
-              {marginRight: larivaarAssist && '10px', transition: 'margin 1s'}}>{ele + (!isLarivaar ? " " : '')}</span>)}
+                {
+                  marginRight: (larivaarAssist.state && larivaarAssist.lineIndex === idx) && '10px', 
+                  transition: 'margin 1s'
+                }
+                }>{ele + (!isLarivaar ? " " : '')}</span>)}
             </h4>
           <div className="meaningsGroup">
               {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
