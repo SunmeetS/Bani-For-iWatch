@@ -110,14 +110,14 @@ const Bani = ({ id }) => {
                 setLarivaarAssist({lineIndex: idx, state: true});
                 setTimeout(() => {
                   setLarivaarAssist({lineIndex: null, state: false})
-                }, 2000);
+                }, 5000);
               }
             }}>
               {isEnglish ? englishTuk: tuk.map((ele) => 
               <span style={
                 {
                   marginRight: (larivaarAssist.state && larivaarAssist.lineIndex === idx) && '10px', 
-                  transition: 'margin 1s'
+                  transition: 'margin 0.5s',
                 }
                 }>{ele + (!isLarivaar ? " " : '')}</span>)}
             </h4>
