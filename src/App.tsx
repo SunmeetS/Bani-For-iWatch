@@ -47,6 +47,7 @@ function App() {
   const appRef = React.useRef()
 
   const [banis, setBanis] = useState([]);
+  const [expandCustomisations, setExpandCustomisations] = useState(false);
 
   const [mode, setMode] = useState('dark')
 
@@ -79,11 +80,9 @@ function App() {
     const gurmukhiText = toUnicode(inputText);
     setSearch(gurmukhiText);
   };
+  const [larivaarAssist, setLarivaarAssist] = useState({state: false, lineIndex: 0, expand: false})
 
   const customisations = [
-    <Button className='customisation' style={{ display: installationPrompt ? 'block' : 'none', margin: 'auto' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
-      Install This App
-    </Button>,
     <div>
       <Input placeholder="Search..." value={search} onChange={(e) => {
         setSearch(e.target.value.split(' ').join(''));
@@ -97,6 +96,7 @@ function App() {
     </div>,
     <div key={'larivaar'} className='customisation'>
       <Checkbox checked={isLarivaar} className='checkbox' onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
+      {isLarivaar && <Checkbox style={{marginLeft: '1rem'}} checked={larivaarAssist.state} className='checkbox' onChange={(e) => setLarivaarAssist({...larivaarAssist, state: e.target.checked})} label=' Larivaar Assist' />}
     </div>,
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
@@ -144,6 +144,9 @@ function App() {
     root.style.setProperty('--titleFontColor', 'rgb(0, 185, 247)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', 'lightGreen')
     root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
+    root.style.setProperty('--larivaarAssistFontColor', 'rgb(185 117 0)');
+    root.style.setProperty('--headerBackgroundColor', 'rgba(255, 193, 87, 0.888)');
+    root.style.setProperty('--headerFontColor', 'black');
   }
   if (mode === 'light') {
     root.style.setProperty('--mainFontColor', '#1a00ba')
@@ -151,8 +154,10 @@ function App() {
     root.style.setProperty('--titleFontColor', 'rgb(175 0 192 / 81%)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', '#8d2773d9')
     root.style.setProperty('--englishMeaningsFontColor', '#056700');
+    root.style.setProperty('--larivaarAssistFontColor', '#0072ddd1');
+    root.style.setProperty('--headerBackgroundColor', '#1a00ba');
+    root.style.setProperty('--headerFontColor', 'white');
   }
-  root.style.setProperty('--headerBackgroundColor', 'rgb(195 87 255)');
 
 
   const [loadingData, setLoadingData] = useState(<div></div>);
@@ -169,7 +174,9 @@ function App() {
   useEffect(() => {
     const header = document.querySelector('.customisations') as HTMLElement;
 
-    header.style.opacity = setOpacity()
+    if(header) {
+      header.style.opacity = setOpacity()
+    }
   }, [scrollPosition])
   useEffect(() => {
     if(presenterMode) {
@@ -227,14 +234,28 @@ function App() {
       setFontSize, baniID, setBaniID, isEnglish, setIsEnglish,
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
-      setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling
+      setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
+      ,larivaarAssist, setLarivaarAssist
     }}>
       <div ref={appRef} className="App">
-        <div className="customisations">
-          {baniID && <Button onClick={() => setBaniID(null)}>{'<'}</Button>}
-          {
-            customisations?.map((ele) => ele)
-          }
+        <div className={expandCustomisations? "expandCustomisations": 'customisations'}>
+          <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
+            <svg onClick={() => setExpandCustomisations(!expandCustomisations)} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 50 50">
+              <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
+            </svg>
+              
+            {expandCustomisations ? <>
+              {baniID && <Button onClick={() => setBaniID(null)}>{'Go Back'}</Button>}
+              <Button style={{ display: installationPrompt ? 'block' : 'none' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
+                Install This App
+              </Button>
+            </> : <h1 style={{fontWeight: 'bold'}}>Smart Gurbani</h1>}
+          </div>
+          {expandCustomisations && <>
+            {
+              customisations?.map((ele) => ele)
+            }
+          </>}
         </div>
         {/* <Index/> */}
         {!baniID && <Banis />}

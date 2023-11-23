@@ -6,7 +6,7 @@ import {BaniContext} from './App.jsx'
 
 
 const Banis = () => {
-  const {banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch} = useContext(BaniContext);
+  const {banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations} = useContext(BaniContext);
 
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
   useEffect(() => {
@@ -20,8 +20,10 @@ const Banis = () => {
     })
     setFilteredBanis(filtered)
   }, [search]);  
+  const isMobile = window.innerWidth <= 425
   return (
-    <div key={'Banis'} className='Banis'>
+    <div key={'Banis'} className='Banis' style={(expandCustomisations && !isMobile) ? {position: 'absolute', left: '15%', transition: '0.5s all'}: 
+    {position: 'absolute', left: '0', transition: '0.5s all'}}>
       {
       (filteredBanis.length ? filteredBanis: banis)?.map((bani) =>
           {  

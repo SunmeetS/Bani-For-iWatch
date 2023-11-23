@@ -15,10 +15,9 @@ const Bani = ({ id }) => {
   const [baniData, setBaniData] = useState({verses: []});
   const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, 
   showPunjabiMeaning, presenterMode, search, opacity, setOpacity, throttledScroll, scrollPosition, 
-  setScrollPosition, scrolling, setScrolling } = useContext(BaniContext) ?? {}
+  setScrollPosition, scrolling, setScrolling, expandCustomisations,larivaarAssist, setLarivaarAssist } = useContext(BaniContext) ?? {}
   const {fetchBani} = utils(setError, setLoading);
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
-  const [larivaarAssist, setLarivaarAssist] = useState({state: false, lineIndex: 0})
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -61,10 +60,12 @@ const Bani = ({ id }) => {
   const scrollToFoundShabad = () => {
     if (foundShabadIndex !== null) {
       const shabadChildren: (HTMLElement | undefined)[] = containerRef.current.children
-      const prevShabad = shabadChildren[foundShabadIndex?.previous] ?? {style: {}}
+      const prevShabad = shabadChildren[foundShabadIndex?.previous]
       const shabadElement = shabadChildren[foundShabadIndex?.current];
-      prevShabad.style.border = '0px'
-      shabadElement.style.border = '3px dashed #5b4bb9'
+      if(prevShabad) {
+        prevShabad.classList.remove('foundShabad')
+      }
+      shabadElement.classList.add('foundShabad')
       if (shabadElement) {
         shabadElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -85,6 +86,8 @@ const Bani = ({ id }) => {
     }
   };
 
+  const isMobile = window.innerWidth < 425
+
   return (
     <div className='Bani' ref={containerRef}>
       {baniData?.verses?.map(({ verse, header }, idx) => {
@@ -101,25 +104,40 @@ const Bani = ({ id }) => {
         return (
           <div
             className={className}
-            style={{
-              fontSize: fontSize
+            style={(!isMobile && expandCustomisations) ? {
+              transition: '0.5s all',
+              fontSize: fontSize,
+              position: 'relative',
+              left: '30%',
+              width: 'calc(100vw - 50%)',
+              overflowX: 'hidden',
+              overflowY: 'scroll',
+            } :{
+              fontSize: fontSize,
+              transition: '0.5s all',
+              position: 'relative',
+              left: '0%',
             }}
           >
             <h4 onClick={() => {              
               if(isLarivaar) {
-                setLarivaarAssist({lineIndex: idx, state: true});
+                setLarivaarAssist({...larivaarAssist, lineIndex: idx, expand: true});
                 setTimeout(() => {
-                  setLarivaarAssist({lineIndex: null, state: false})
+                  setLarivaarAssist({...larivaarAssist, lineIndex: null, expand: false})
                 }, 5000);
               }
             }}>
-              {isEnglish ? englishTuk: tuk.map((ele) => 
-              <span style={
-                {
-                  marginRight: (larivaarAssist.state && larivaarAssist.lineIndex === idx) && '10px', 
-                  transition: 'margin 0.5s',
-                }
-                }>{ele + (!isLarivaar ? " " : '')}</span>)}
+              {isEnglish ? englishTuk: tuk.map((ele, index) => 
+              {
+                return (
+                  <span className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''} style={
+                    {
+                      marginRight: (larivaarAssist.expand && larivaarAssist.lineIndex === idx) && '10px', 
+                      transition: 'margin 0.5s',
+                    }
+                    }>{ele + (!isLarivaar ? " " : '')}</span>)}
+                )
+              }
             </h4>
           <div className="meaningsGroup">
               {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
