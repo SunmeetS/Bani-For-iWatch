@@ -2,14 +2,34 @@
     font-weight: 400;
 }
 
+.shabad-main {
+    padding-top: var(--customisationsHeight);
+    height: 100vh;
+    margin: 1rem;
+}
+
+.inputGroup {
+    display: flex;
+    .MuiInput-root {
+        width: 70%;
+    }
+    >* {
+        margin: @padding-sm;
+    }
+    width: clamp(302px, 90vw, 800.8px);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
 @padding-sm: 0.5rem;
 @padding-md: 1rem;
 @padding-lg: 1.5rem;
 
 :root {
-    --headerHeight: 50px
+    --headerHeight: 50px;
+    --customisationsHeight: 70px
 }
-
 
 .App {
     color: var(--mainFontColor);
@@ -26,6 +46,21 @@
 h1, h2, h3, h4, h5, h6, p, span {
     margin: 0rem;
     padding: 0rem;
+}
+
+.homeScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh);
+    >* {
+        width: fit-content;
+        background: var(--mainFontColor);
+        color: var(--mainBackgroundColor) !important;
+        border-radius: 1rem;
+        text-decoration: underline;
+        cursor: pointer;
+    }
 }
 
 .tuk, .bani {
@@ -48,6 +83,20 @@ h1, h2, h3, h4, h5, h6, p, span {
     flex-direction: column;
 }
 
+.shabadNavigation {
+    display: flex;
+    justify-content: space-between;
+    >* {
+        background-color: var(--mainFontColor);
+        color: var(--mainBackgroundColor);
+        padding: @padding-sm;
+        border-radius: @padding-sm;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    padding: @padding-md;
+}
+
 .presenter {
     display: flex;
     height: 80vh;
@@ -66,16 +115,19 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .Banis {
     background-color: var(--mainBackgroundColor);
-    height: calc(100vh - 50px);
-    padding-top: 50px;
+    height: calc(100vh - var(--customisationsHeight););
+    padding-top: var(--customisationsHeight);
     overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .Bani {
-    height: calc(100vh - 50px);
+    height: calc(100vh - var(--customisationsHeight));
     overflow-x: scroll;
     scroll-snap-type: y mandatory;
-    padding-top: 50px;
+    padding-top: var(--customisationsHeight);
 }
 
 .tuk {
@@ -90,8 +142,7 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .customisations, .expandCustomisations {
     width: 100vw;
-    height: 50px;
-    padding: 1vh;
+    height: var(--customisationsHeight);
     display: flex;
     align-items: center;
     position: absolute;
@@ -112,6 +163,7 @@ h1, h2, h3, h4, h5, h6, p, span {
         margin: 1rem !important;
         width: max-content;
     }
+    width: 100%;
 }
 .buttonGroupNoMarginTop {
     flex-wrap: wrap;
@@ -129,6 +181,10 @@ h1, h2, h3, h4, h5, h6, p, span {
     align-items: start;
     overflow-y: scroll;
     padding: 5vh 1vw;
+    @media only screen and (max-width: 600px) {
+        width: 100%;
+    }
+    
 }
 .customisations::-webkit-scrollbar {
     display: none;

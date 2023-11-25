@@ -1,4 +1,4 @@
-import { API_URL, fetcher, getFromLS, saveToLS } from './App';
+import App, { API_URL, fetcher } from './App';
 
 export type Bani = {
     ID: number;
@@ -108,20 +108,62 @@ export function getFirstLetters(text) {
 }
 
 
-    export function utils(setError, setLoading) {
+    export function utils() {
       async function fetchBanis() {
-        return await fetcher(API_URL + '/banis', setLoading, setError);
+        return await fetcher(API_URL + '/banis');
+      }
+      
+      const fetchShabads = async (searchInput: string) => {
+        const searchShabadsUrl = `${API_URL}search/${searchInput}?source=all&writer=all&page=1&livesearch=1`
+        const shabads = await fetcher(searchShabadsUrl)
+        return shabads
       }
       const fetchBani = async (id: number) => {
-        const baniFromLS = getFromLS('bani' + id);
-        if (!baniFromLS) {
-          const newBaniData = await fetcher(API_URL + '/banis/' + id, setLoading, setError);
-          saveToLS('bani' + id, JSON.stringify(newBaniData));
-          return newBaniData;
-        }
-        return baniFromLS
+        const fetchBaniUrl = API_URL + 'banis/' + id;
+        const bani = await fetcher(fetchBaniUrl);
+
+        const baniDetails = bani.verses.map((ele) => {
+
+          ele = ele.verse;
+          const tuk = ele.verse.unicode;
+          const englishTuk = ele.transliteration.english;
+          const {bdb, ms, ssk} = ele.translation.en;
+          const englishMeaning = bdb ?? ms ?? ssk;
+          const {bdb: pu1, ms: pu2, ft, ss} = ele.translation.pu;
+          const punjabiMeaning = pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
+
+          return {
+            tuk, englishTuk, englishMeaning, punjabiMeaning
+          }
+
+        })
+
+        return {details: [...baniDetails], previous: '', next: ''};
+      }
+
+      const fetchShabad = async (id: number) => {
+        const fetchShabadUrl = API_URL+`shabads/${id}`
+
+        const shabad = await fetcher(fetchShabadUrl);
+        const {previous, next} = shabad.navigation
+        const shabadDetails = shabad.verses.map((ele) => {
+
+          const tuk = ele.verse.unicode;
+          const englishTuk = ele.transliteration.english;
+          const {bdb, ms, ssk} = ele.translation.en;
+          const englishMeaning = bdb ?? ms ?? ssk;
+          const {bdb: pu1, ms: pu2, ft, ss} = ele.translation.pu;
+          const punjabiMeaning = pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
+
+          return {
+            tuk, englishTuk, englishMeaning, punjabiMeaning
+          }
+
+        })
+
+        return {details: [...shabadDetails], previous, next}
       }
       return {
-        fetchBani, fetchBanis
+        fetchBani, fetchBanis, fetchShabad, fetchShabads
       }
     }

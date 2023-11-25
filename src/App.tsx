@@ -7,21 +7,20 @@ import * as React from 'react';
 import Bani from './Bani';
 import Index from './Index';
 import Presenter from './Presenter';
-import {toUnicode} from 'gurmukhi-utils'
+import { toUnicode } from 'gurmukhi-utils'
+import Shabads from './Shabads';
+import { useNavigate } from 'react-router-dom';
 
-export const API_URL = 'https://api.banidb.com/v2/'
-export async function fetcher(url, setLoading, setError) {
-  // setLoading(true);
+export const isMobile = window.innerWidth <= 425
+
+export const API_URL = 'https://api.banidb.com/v2/';
+export async function fetcher(url) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    // setLoading(false);
-    // setError(false);
     return data;
   } catch (err) {
     console.log(err)
-    // setLoading(false);
-    // setError(true);
   }
 }
 export function saveToLS(key, value) {
@@ -48,6 +47,7 @@ function App() {
 
   const [banis, setBanis] = useState([]);
   const [expandCustomisations, setExpandCustomisations] = useState(false);
+  const [shabadID, setShabadID] = useState()
 
   const [mode, setMode] = useState('dark')
 
@@ -57,8 +57,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const { fetchBani, fetchBanis } = utils(setError, setLoading)
+  const { fetchBani, fetchBanis } = utils()
   const [baniID, setBaniID] = useState()
+
+  const showCustomisations = baniID || shabadID
 
   const [isEnglish, setIsEnglish] = useState(false)
   const [showPunjabiMeaning, setShowPunjabiMeaning] = useState(false);
@@ -80,7 +82,7 @@ function App() {
     const gurmukhiText = toUnicode(inputText);
     setSearch(gurmukhiText);
   };
-  const [larivaarAssist, setLarivaarAssist] = useState({state: false, lineIndex: 0, expand: false})
+  const [larivaarAssist, setLarivaarAssist] = useState({ state: false, lineIndex: 0, expand: false })
 
   const customisations = [
     <div>
@@ -96,7 +98,7 @@ function App() {
     </div>,
     <div key={'larivaar'} className='customisation'>
       <Checkbox checked={isLarivaar} className='checkbox' onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
-      {isLarivaar && <Checkbox style={{marginLeft: '1rem'}} checked={larivaarAssist.state} className='checkbox' onChange={(e) => setLarivaarAssist({...larivaarAssist, state: e.target.checked})} label=' Larivaar Assist' />}
+      {isLarivaar && <Checkbox style={{ marginLeft: '1rem' }} checked={larivaarAssist.state} className='checkbox' onChange={(e) => setLarivaarAssist({ ...larivaarAssist, state: e.target.checked })} label=' Larivaar Assist' />}
     </div>,
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
@@ -108,13 +110,13 @@ function App() {
     <div key={'isEnglish'} className='customisation'>
       <Checkbox checked={isEnglish} className='checkbox' onChange={(e) => setIsEnglish(e.target.checked)} label='English' />
     </div>,
-    <div style={{ display: baniID ? 'flex' : 'none' }} key={'enArth'} className='customisation'>
+    <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'enArth'} className='customisation'>
       <Checkbox checked={showEnglishMeaning} className='checkbox' onChange={(e) => setShowEnglishMeaning(e.target.checked)} label='English Meanings' />
     </div>,
-    <div style={{ display: baniID ? 'flex' : 'none' }} key={'punArth'} className='customisation'>
-      <Checkbox checked = {showPunjabiMeaning} className='checkbox' onChange={(e) => setShowPunjabiMeaning(e.target.checked)} label='ਗੁਰਮੁਖੀ ਅਰਥ' />
+    <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'punArth'} className='customisation'>
+      <Checkbox checked={showPunjabiMeaning} className='checkbox' onChange={(e) => setShowPunjabiMeaning(e.target.checked)} label='ਗੁਰਮੁਖੀ ਅਰਥ' />
     </div>,
-    <div style={{ display: baniID ? 'flex' : 'none' }} key={'autoScroll'} className='customisation'>
+    <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'autoScroll'} className='customisation'>
       <Checkbox checked={scrolling.status} className='checkbox' onChange={(e) => setScrolling({ ...scrolling, status: e.target.checked })} label='Auto Scroll' />
     </div>,
     <div style={{ display: scrolling.status ? 'flex' : 'none' }} key={'scrollSpeed'} className='customisation'>
@@ -124,17 +126,16 @@ function App() {
         <Button onClick={() => setScrolling({ ...scrolling, speed: scrolling.speed - 1 })}>-</Button>
       </ButtonGroup>
     </div>,
-    <div style={{ display: baniID ? 'flex' : 'none' }} key={'presenterMode'} className='customisation'>
+    <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'presenterMode'} className='customisation'>
       <Checkbox checked={presenterMode} className='checkbox' onChange={(e) => {
         setPresenterMode(() => {
-            return e.target.checked
-          }
-          );
+          return e.target.checked
+        }
+        );
       }} label='Presenter Mode' />
     </div>,
+    
   ]
-
-  // fetcher(API_URL + 'hukamnamas/today', setLoading, setError).then(res => console.log(res))
 
   const root = document.querySelector(':root') as HTMLElement;
 
@@ -145,7 +146,7 @@ function App() {
     root.style.setProperty('--gurmukhiMeaningsFontColor', 'lightGreen')
     root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
     root.style.setProperty('--larivaarAssistFontColor', 'rgb(185 117 0)');
-    root.style.setProperty('--headerBackgroundColor', 'rgba(255, 193, 87, 0.888)');
+    root.style.setProperty('--headerBackgroundColor', 'rgba(255, 193, 87)');
     root.style.setProperty('--headerFontColor', 'black');
   }
   if (mode === 'light') {
@@ -159,12 +160,12 @@ function App() {
     root.style.setProperty('--headerFontColor', 'white');
   }
 
-
-  const [loadingData, setLoadingData] = useState(<div></div>);
+  const [route, setRoute] = useState('')
 
   const [scrollPosition, setScrollPosition] = useState({ prev: 0, current: 0 });
 
   const setOpacity = () => {
+    if(expandCustomisations) return 1;
     const { prev, current } = scrollPosition
     if (current < 20) return '1';
     if (scrolling.status || current < prev) return '0.9';
@@ -174,12 +175,12 @@ function App() {
   useEffect(() => {
     const header = document.querySelector('.customisations') as HTMLElement;
 
-    if(header) {
+    if (header) {
       header.style.opacity = setOpacity()
     }
   }, [scrollPosition])
   useEffect(() => {
-    if(presenterMode) {
+    if (presenterMode) {
       document.documentElement?.requestFullscreen?.();
       setFontSize(40);
       setShowEnglishMeaning(true);
@@ -222,11 +223,11 @@ function App() {
       setBanis((savedBanis))
     }
 
+    if(!localStorage.getItem('cleared')) {
+      localStorage.clear();
+      localStorage.setItem('cleared', 'true')
+    }
   }, [])
-
-  if (loading) {
-    return <CircularProgress color='success' />;
-  }
 
   return (
     <BaniContext.Provider value={{
@@ -235,32 +236,47 @@ function App() {
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
-      ,larivaarAssist, setLarivaarAssist
+      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setRoute
     }}>
       <div ref={appRef} className="App">
-        <div className={expandCustomisations? "expandCustomisations": 'customisations'}>
+        <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
           <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
-            <svg onClick={() => setExpandCustomisations(!expandCustomisations)} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" style={{width: '30px'}} viewBox="0 0 50 50">
+            <svg onClick={() => setExpandCustomisations(!expandCustomisations)} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" style={{ width: '30px' }} viewBox="0 0 50 50">
               <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
             </svg>
-              
-            {expandCustomisations ? <>
-              {baniID && <Button onClick={() => setBaniID(null)}>{'Go Back'}</Button>}
+
+            {(isMobile || !expandCustomisations) && <h1 style={{ fontWeight: 'bold' }}>{route}</h1>} 
+
+            { expandCustomisations && <>
+              {(route !== '') && <Button onClick={() => {
+                setBaniID(null);
+                setShabadID(null);
+                setRoute('')
+              }}>{'Go Back'}</Button>}
               <Button style={{ display: installationPrompt ? 'block' : 'none' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
                 Install This App
               </Button>
-            </> : <h1 style={{fontWeight: 'bold'}}>Smart Gurbani</h1>}
+            </>}
           </div>
           {expandCustomisations && <>
             {
               customisations?.map((ele) => ele)
             }
           </>}
-        </div>
-        {/* <Index/> */}
-        {!baniID && <Banis />}
-        {baniID && <Bani id={baniID} />}
-        {/* {baniID && <Presenter id={baniID} />} */}
+        </div>  
+        {route === '' && <div className="homeScreen">
+          <>
+            <h1 onClick={() => setRoute('Find a Shabad')} className='tuk'>
+              Search a Shabad
+            </h1>
+            <h1 onClick={() => setRoute('baniList')} className='tuk'>
+              Read a Bani
+            </h1>
+          </>
+        </div>}
+        {route === 'baniList' && <Banis />}
+        {route === 'Find a Shabad' && <Shabads />}
+        {(route === 'Read a Bani' || route === 'Read a Shabad') && <Bani shabadId={shabadID} baniId={baniID} />}
       </div>
     </BaniContext.Provider>
   )

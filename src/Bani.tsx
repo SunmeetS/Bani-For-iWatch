@@ -1,22 +1,26 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getFirstLetters, removeMatras, utils } from './utils';
-import { useLocation } from 'react-router-dom';
-import { BaniContext } from './App.jsx'
+import { BaniContext, isMobile } from './App.jsx'
+import { Button } from '@mui/joy';
 
 
-const Bani = ({ id }) => {
+const Bani = ({ baniId, shabadId }) => {
 
   useEffect(() => {
     return () => {
       () => setBaniID(null);
+      () => setShabadID(null)
     }
-  })
-  !id ? id = useLocation().pathname.split('/')[1] : ''
-  const [baniData, setBaniData] = useState({verses: []});
+  }, [])
+  const [baniData, setBaniData] = useState({
+    details: [],
+    previous: '',
+    next: '',
+});
   const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, 
-  showPunjabiMeaning, presenterMode, search, opacity, setOpacity, throttledScroll, scrollPosition, 
-  setScrollPosition, scrolling, setScrolling, expandCustomisations,larivaarAssist, setLarivaarAssist } = useContext(BaniContext) ?? {}
-  const {fetchBani} = utils(setError, setLoading);
+  showPunjabiMeaning, presenterMode, search, throttledScroll,  
+  scrolling, expandCustomisations,larivaarAssist, setLarivaarAssist, setShabadID } = useContext(BaniContext) ?? {}
+  const {fetchBani, fetchShabad} = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
 
@@ -46,15 +50,26 @@ const Bani = ({ id }) => {
   }, [scrolling.status, scrolling.speed]);
 
   useEffect(() => {
-    fetchBani(id).then(bani => {
-      setBaniData(bani)
-    })
+    if(baniId) {
+      fetchBani(baniId).then(bani => {
+        setBaniData(bani);
+        handleSearch();
+      })
+    }
+
+    if(shabadId) {
+      fetchShabad(shabadId).then((data) => {
+        setBaniData(data as any);
+        handleSearch();
+      });
+    }
+    
     containerRef?.current?.focus();
     containerRef?.current?.addEventListener('scroll', throttledScroll)
-  }, [])
+  }, [shabadId, baniId])
 
   useEffect(() => {
-    handleSearch()
+    if(search) handleSearch()
   }, [search])
 
   const scrollToFoundShabad = () => {
@@ -73,9 +88,8 @@ const Bani = ({ id }) => {
   };
 
   const handleSearch = () => {
-    const verses = baniData?.verses || [];
-    for (let i = 0; i < verses.length; i++) {
-      const tuk = removeMatras(verses?.[i]?.verse?.verse?.unicode);
+    for (let i = 0; i < baniData.details.length; i++) {
+      const tuk = removeMatras(baniData?.details?.[i]?.tuk);
       const tukFirstLetters: string = getFirstLetters(tuk).join('');
       const firstLettersSearch: string = removeMatras(search).split(' ').join('')
       if (tukFirstLetters?.includes(firstLettersSearch)) {
@@ -86,21 +100,18 @@ const Bani = ({ id }) => {
     }
   };
 
-  const isMobile = window.innerWidth < 425
-
   return (
     <div className='Bani' ref={containerRef}>
-      {baniData?.verses?.map(({ verse, header }, idx) => {
-        const tuk = verse.verse.unicode.split(' '),
-        englishTuk = verse.transliteration.en,
-        {bdb: en1, ms: en2, ssk: en3} = verse?.translation?.en ?? {},
-        englishMeaning = en1 ?? en2 ?? en3 ;
-        let {bdb: pu1, ft: pu2, ms: pu3, ss: pu4} = verse?.translation?.pu ?? {},
-        punjabiMeaning = pu1 ?? pu2 ?? pu3 ?? pu4
-        punjabiMeaning = punjabiMeaning.unicode
+      {baniData?.details?.map((verse, idx) => {
+
+        let {tuk, englishTuk, englishMeaning, punjabiMeaning} = verse ?? {}
+
+        tuk = tuk?.split(' ');
+
         let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}
-          ${header || idx === 0 ? 'title' : ''}`;
+          ${ idx === 0 ? 'title' : ''}`;
         if(presenterMode) className = 'presenter'; 
+        
         return (
           <div
             className={className}
@@ -127,7 +138,7 @@ const Bani = ({ id }) => {
                 }, 5000);
               }
             }}>
-              {isEnglish ? englishTuk: tuk.map((ele, index) => 
+              {isEnglish ? englishTuk: tuk?.map((ele, index) => 
               {
                 return (
                   <span className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''} style={
@@ -145,7 +156,20 @@ const Bani = ({ id }) => {
             </div>
           </div>
         );
-      })}
+      }
+      )}
+
+      {
+        shabadId && <div className='shabadNavigation tuk'>
+          <Button onClick={() => {
+            setShabadID(baniData.previous)
+          }}>{'Previous'}</Button>
+          <Button onClick={() => {
+            setShabadID(baniData.next)
+          }}>{'Next'}</Button>
+        </div>
+      }
+
     </div>
   );
 }
