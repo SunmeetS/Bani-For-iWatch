@@ -61,6 +61,13 @@ h1, h2, h3, h4, h5, h6, p, span {
         text-decoration: underline;
         cursor: pointer;
     }
+    @media only screen and (max-width: 600px) {
+        flex-direction: column;
+        >* {
+            margin: 1rem !important;
+            max-width: 250px;
+        }
+    }
 }
 
 .tuk, .bani {
@@ -161,6 +168,8 @@ h1, h2, h3, h4, h5, h6, p, span {
     width: 90vw;
     object-fit: cover;
     object-position: 35%;
+    border-radius: 1rem;
+    box-shadow: 1px 1px 1px 1px white, -1px -1px 1px 1px white;
 }
 
 .buttonGroup, .buttonGroupNoMarginTop {
