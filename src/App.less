@@ -1,3 +1,5 @@
+@mobile: ~'only screen and (max-width: 600px)';
+
 * {
     font-weight: 400;
 }
@@ -5,7 +7,6 @@
 .shabad-main {
     padding-top: var(--customisationsHeight);
     height: 100vh;
-    margin: 1rem;
 }
 
 .inputGroup {
@@ -61,7 +62,7 @@ h1, h2, h3, h4, h5, h6, p, span {
         text-decoration: underline;
         cursor: pointer;
     }
-    @media only screen and (max-width: 600px) {
+    @media @mobile {
         flex-direction: column;
         >* {
             margin: 1rem !important;
@@ -161,6 +162,12 @@ h1, h2, h3, h4, h5, h6, p, span {
     >* {
         color: var(--headerFontColor) !important
     }
+    @media @mobile {
+        h1 {
+            width: 80%;
+            overflow-x: scroll;
+        }
+    }
 }
 
 .darbarSahibImage {
@@ -197,7 +204,7 @@ h1, h2, h3, h4, h5, h6, p, span {
     align-items: start;
     overflow-y: scroll;
     padding: 5vh 1vw;
-    @media only screen and (max-width: 600px) {
+    @media @mobile {
         width: 100%;
     }
     

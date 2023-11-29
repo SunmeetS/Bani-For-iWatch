@@ -4,7 +4,7 @@ import { Button, CircularProgress, Input } from '@mui/joy'
 import './App.less'
 import Bani from './Bani'
 import { utils } from './utils'
-import { toUnicode } from 'gurmukhi-utils'
+import { toEnglish, toUnicode } from 'gurmukhi-utils'
 
 type Props = {}
 
@@ -12,7 +12,7 @@ const Shabads = (props: Props) => {
 
     const [shabads, setShabads] = useState({ verses: [] });
     const [searchInput, setSearchInput] = useState('');
-    const { shabadID, setShabadID, setRoute, setSearch, setBaniName, search, statusText, setStatusText} = useContext(BaniContext);
+    const { shabadID, setShabadID, setRoute, setSearch, setBaniName, search, statusText, setStatusText, isEnglish} = useContext(BaniContext);
     const { fetchShabads } = utils()
 
     useEffect(() => {
@@ -54,7 +54,8 @@ const Shabads = (props: Props) => {
                         statusText && <h1>{statusText}</h1> }
                         {shabads?.verses?.map((shabad) => {
                             const tuk = shabad.verse.unicode
-                            const baniName = (tuk as string).split(' ').slice(0, 6).join('')
+                            const baniName = (tuk as string).split(' ').slice(0, 6).join('');
+                            const englishTuk = toEnglish(tuk)
                             return (
                                 <>
                                     <h1 onClick={() => {
@@ -62,7 +63,7 @@ const Shabads = (props: Props) => {
                                         setBaniName(baniName);
                                         setRoute(baniName)
                                     }} className='bani'>
-                                        {tuk}
+                                        {isEnglish ? englishTuk : tuk}
                                     </h1>
                                 </>
                             )
