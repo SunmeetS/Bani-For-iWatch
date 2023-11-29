@@ -1,28 +1,31 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getFirstLetters, removeMatras, utils } from './utils';
 import { BaniContext, isMobile } from './App.jsx'
-import { Button } from '@mui/joy';
+import { Button, CircularProgress } from '@mui/joy';
 
 
 const Bani = ({ baniId, shabadId }) => {
 
-  useEffect(() => {
-    return () => {
-      () => setBaniID(null);
-      () => setShabadID(null)
-    }
-  }, [])
-  const [baniData, setBaniData] = useState({
+  let [baniData, setBaniData] = useState({
     details: [],
     previous: '',
     next: '',
 });
   const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, 
   showPunjabiMeaning, presenterMode, search, throttledScroll,  
-  scrolling, expandCustomisations,larivaarAssist, setLarivaarAssist, setShabadID } = useContext(BaniContext) ?? {}
+  scrolling, expandCustomisations,larivaarAssist, setLarivaarAssist, setShabadID, statusText, setStatusText } = useContext(BaniContext) ?? {}
   const {fetchBani, fetchShabad} = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    setStatusText(<CircularProgress style={{margin: '1rem'}} />)
+    return () => {
+      setBaniID(null);
+      setShabadID(null);
+      setStatusText(null)
+    }
+  }, [])
 
   useEffect(() => {
     let interval;
@@ -53,24 +56,26 @@ const Bani = ({ baniId, shabadId }) => {
     if(baniId) {
       fetchBani(baniId).then(bani => {
         setBaniData(bani);
-        handleSearch();
+        handleSearch(bani);
+        setStatusText(null);
+      }).catch(() => {
+        setStatusText('Failed to load Bani data');
       })
     }
 
     if(shabadId) {
       fetchShabad(shabadId).then((data) => {
         setBaniData(data as any);
-        handleSearch();
+        handleSearch(data);
+        setStatusText(null);
+      }).catch(() => {
+        setStatusText('Failed to load Shabad data')
       });
     }
     
     containerRef?.current?.focus();
     containerRef?.current?.addEventListener('scroll', throttledScroll)
   }, [shabadId, baniId])
-
-  useEffect(() => {
-    if(search) handleSearch()
-  }, [search])
 
   const scrollToFoundShabad = () => {
     if (foundShabadIndex !== null) {
@@ -87,7 +92,8 @@ const Bani = ({ baniId, shabadId }) => {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = (bani = null) => {
+    if(bani) baniData = bani;
     for (let i = 0; i < baniData.details.length; i++) {
       const tuk = removeMatras(baniData?.details?.[i]?.tuk);
       const tukFirstLetters: string = getFirstLetters(tuk).join('');
@@ -100,8 +106,10 @@ const Bani = ({ baniId, shabadId }) => {
     }
   };
 
+
   return (
     <div className='Bani' ref={containerRef}>
+      {statusText && statusText}
       {baniData?.details?.map((verse, idx) => {
 
         let {tuk, englishTuk, englishMeaning, punjabiMeaning} = verse ?? {}

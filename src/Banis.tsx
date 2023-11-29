@@ -6,7 +6,7 @@ import { BaniContext } from './App.jsx'
 
 
 const Banis = () => {
-  const { banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setRoute } = useContext(BaniContext);
+  const { banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setRoute, setBaniName, baniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
   useEffect(() => {
     const filtered = banis.filter((bani) => {
@@ -19,6 +19,9 @@ const Banis = () => {
     })
     setFilteredBanis(filtered)
   }, [search]);
+
+  useEffect(() => {console.log(baniName)}, [baniName])
+
   const isMobile = window.innerWidth <= 425
   return (
     <div key={'Banis'} className='Banis' style={(expandCustomisations && !isMobile) ? { position: 'absolute', left: '15%', transition: '0.5s all' } :
@@ -31,7 +34,8 @@ const Banis = () => {
           return <div
             onClick={() => {
               setBaniID(bani.ID);
-              setRoute('Read a Bani')
+              setBaniName(tuk)
+              setRoute(tuk)
             }}
             style={{ fontSize: fontSize }}
             key={bani.ID}

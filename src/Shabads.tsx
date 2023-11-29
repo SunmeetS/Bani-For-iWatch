@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { BaniContext, fetcher } from './App'
-import { Button, Input } from '@mui/joy'
+import { Button, CircularProgress, Input } from '@mui/joy'
 import './App.less'
 import Bani from './Bani'
-import { handleSubmit, utils } from './utils'
+import { utils } from './utils'
 import { toUnicode } from 'gurmukhi-utils'
 
 type Props = {}
@@ -12,13 +12,26 @@ const Shabads = (props: Props) => {
 
     const [shabads, setShabads] = useState({ verses: [] });
     const [searchInput, setSearchInput] = useState('');
-    const { shabadID, setShabadID, setRoute, setSearch } = useContext(BaniContext);
+    const { shabadID, setShabadID, setRoute, setSearch, setBaniName, search, statusText, setStatusText} = useContext(BaniContext);
     const { fetchShabads } = utils()
+
+    useEffect(() => {
+        return(
+            () => {
+                setStatusText(null)
+            }
+        )
+    }, [])
 
     useEffect(() => {setShabadID}, [shabadID])
 
     const updateShabads = () => {
-        fetchShabads(searchInput).then((shabads) => setShabads(shabads))
+        setStatusText(<CircularProgress style={{margin: '1rem'}} />)
+        fetchShabads(search).then((shabads) => {
+            if(shabads.verses.length === 0) setStatusText('No Shabads Found');
+            else setStatusText(null)
+            setShabads(shabads);
+        }).catch(() => setStatusText('Please Try Again'))
     }
 
     return (
@@ -38,14 +51,16 @@ const Shabads = (props: Props) => {
                         }}>Search Shabad</Button>
                     </div>
                     {
-                        shabads?.verses?.map((shabad) => {
+                        statusText && <h1>{statusText}</h1> }
+                        {shabads?.verses?.map((shabad) => {
                             const tuk = shabad.verse.unicode
-
+                            const baniName = (tuk as string).split(' ').slice(0, 6).join('')
                             return (
                                 <>
                                     <h1 onClick={() => {
                                         setShabadID(shabad.shabadId);
-                                        setRoute('Read a Shabad')
+                                        setBaniName(baniName);
+                                        setRoute(baniName)
                                     }} className='bani'>
                                         {tuk}
                                     </h1>

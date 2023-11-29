@@ -48,8 +48,9 @@ function App() {
   const [banis, setBanis] = useState([]);
   const [expandCustomisations, setExpandCustomisations] = useState(false);
   const [shabadID, setShabadID] = useState()
-
+  const [baniName, setBaniName] = useState('')
   const [mode, setMode] = useState('dark')
+  const [statusText, setStatusText] = useState<any>();
 
   const [isLarivaar, setIsLarivaar] = useState(false)
   let [fontSize, setFontSize] = useState(34);
@@ -236,7 +237,7 @@ function App() {
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
-      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setRoute
+      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setRoute, baniName, setBaniName, statusText, setStatusText
     }}>
       <div ref={appRef} className="App">
         <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
@@ -269,14 +270,14 @@ function App() {
             <h1 onClick={() => setRoute('Find a Shabad')} className='tuk'>
               Search a Shabad
             </h1>
-            <h1 onClick={() => setRoute('baniList')} className='tuk'>
+            <h1 onClick={() => setRoute('Beant Baaniyan')} className='tuk'>
               Read a Bani
             </h1>
           </>
         </div>}
-        {route === 'baniList' && <Banis />}
+        {route === 'Beant Baaniyan' && <Banis />}
         {route === 'Find a Shabad' && <Shabads />}
-        {(route === 'Read a Bani' || route === 'Read a Shabad') && <Bani shabadId={shabadID} baniId={baniID} />}
+        {(route === baniName) && <Bani shabadId={shabadID} baniId={baniID} />}
       </div>
     </BaniContext.Provider>
   )

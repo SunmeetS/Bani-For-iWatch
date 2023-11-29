@@ -114,7 +114,7 @@ export function getFirstLetters(text) {
       }
       
       const fetchShabads = async (searchInput: string) => {
-        const searchShabadsUrl = `${API_URL}search/${searchInput}?source=all&writer=all&page=1&livesearch=1`
+        const searchShabadsUrl = `${API_URL}search/${searchInput}?source=all&searchtype=1&writer=all&page=1&livesearch=1`
         const shabads = await fetcher(searchShabadsUrl)
         return shabads
       }
