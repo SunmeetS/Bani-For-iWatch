@@ -10,6 +10,7 @@ import Presenter from './Presenter';
 import { toUnicode } from 'gurmukhi-utils'
 import Shabads from './Shabads';
 import { useNavigate } from 'react-router-dom';
+import LiveAudio from './LiveAudio';
 
 export const isMobile = window.innerWidth <= 425
 
@@ -273,11 +274,15 @@ function App() {
             <h1 onClick={() => setRoute('Beant Baaniyan')} className='tuk'>
               Read a Bani
             </h1>
+            <h1 onClick={() => setRoute('Darbar Sahib Live')} className='tuk'>
+              Darbar Sahib Live Audio
+            </h1>
           </>
         </div>}
         {route === 'Beant Baaniyan' && <Banis />}
         {route === 'Find a Shabad' && <Shabads />}
         {(route === baniName) && <Bani shabadId={shabadID} baniId={baniID} />}
+        {route === 'Darbar Sahib Live' && <LiveAudio />}
       </div>
     </BaniContext.Provider>
   )
