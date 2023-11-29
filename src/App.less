@@ -53,7 +53,8 @@ h1, h2, h3, h4, h5, h6, p, span {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh);
+    height: calc(100vh - var(--customisationsHeight));
+    padding: var(--customisationsHeight);
     >* {
         width: fit-content;
         background: var(--mainFontColor);
@@ -144,6 +145,10 @@ h1, h2, h3, h4, h5, h6, p, span {
     margin: 0 2vw;
 }
 
+.liveAudio {
+    margin: @padding-lg;
+}
+
 .larivaarAssist {
     color: var(--larivaarAssistFontColor)
 }
@@ -159,6 +164,7 @@ h1, h2, h3, h4, h5, h6, p, span {
     background-color: var(--headerBackgroundColor);
     box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.224);
     transition: 0.5s all;
+    left: 0;
     >* {
         color: var(--headerFontColor) !important
     }

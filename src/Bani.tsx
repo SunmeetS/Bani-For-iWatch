@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getFirstLetters, removeMatras, utils } from './utils';
-import { BaniContext, isMobile } from './App.jsx'
+import { isMobile } from './App.jsx'
+import { BaniContext } from './main';
 import { Button, CircularProgress } from '@mui/joy';
 
 
@@ -30,11 +31,11 @@ const Bani = ({ baniId, shabadId }) => {
   useEffect(() => {
     let interval;
   
-    if (scrolling.status) {
+    if (scrolling?.status) {
       if (!interval) {
         interval = setInterval(() => {
           containerRef?.current.scrollBy({
-            top: scrolling.speed,
+            top: scrolling?.speed,
             behavior: 'smooth'
           });      
         }, 50);
@@ -50,7 +51,7 @@ const Bani = ({ baniId, shabadId }) => {
         clearInterval(interval);
       }
     };
-  }, [scrolling.status, scrolling.speed]);
+  }, [scrolling?.status, scrolling?.speed]);
 
   useEffect(() => {
     if(baniId) {
@@ -108,76 +109,78 @@ const Bani = ({ baniId, shabadId }) => {
 
 
   return (
-    <div className='Bani' ref={containerRef}>
-      {statusText && statusText}
-      {baniData?.details?.map((verse, idx) => {
+    <div className='App'>
+      <div className='Bani' ref={containerRef}>
+        {statusText && statusText}
+        {baniData?.details?.map((verse, idx) => {
 
-        let {tuk, englishTuk, englishMeaning, punjabiMeaning} = verse ?? {}
+          let {tuk, englishTuk, englishMeaning, punjabiMeaning} = verse ?? {}
 
-        tuk = tuk?.split(' ');
+          tuk = tuk?.split(' ');
 
-        let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}
-          ${ idx === 0 ? 'title' : ''}`;
-        if(presenterMode) className = 'presenter'; 
-        
-        return (
-          <div
-            className={className}
-            style={(!isMobile && expandCustomisations) ? {
-              transition: '0.5s all',
-              fontSize: fontSize,
-              position: 'relative',
-              left: '30%',
-              width: 'calc(100vw - 50%)',
-              overflowX: 'hidden',
-              overflowY: 'scroll',
-            } :{
-              fontSize: fontSize,
-              transition: '0.5s all',
-              position: 'relative',
-              left: '0%',
-            }}
-          >
-            <h4 onClick={() => {              
-              if(isLarivaar) {
-                setLarivaarAssist({...larivaarAssist, lineIndex: idx, expand: true});
-                setTimeout(() => {
-                  setLarivaarAssist({...larivaarAssist, lineIndex: null, expand: false})
-                }, 5000);
-              }
-            }}>
-              {isEnglish ? englishTuk: tuk?.map((ele, index) => 
-              {
-                return (
-                  <span className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''} style={
-                    {
-                      marginRight: (larivaarAssist.expand && larivaarAssist.lineIndex === idx) && '10px', 
-                      transition: 'margin 0.5s',
-                    }
-                    }>{ele + (!isLarivaar ? " " : '')}</span>)}
-                )
-              }
-            </h4>
-          <div className="meaningsGroup">
-              {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
-              {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5}} className='gurmukhiMeanings'>{punjabiMeaning}</p>}
+          let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}
+            ${ idx === 0 ? 'title' : ''}`;
+          if(presenterMode) className = 'presenter'; 
+          
+          return (
+            <div
+              className={className}
+              style={(!isMobile && expandCustomisations) ? {
+                transition: '0.5s all',
+                fontSize: fontSize,
+                position: 'relative',
+                left: '30%',
+                width: 'calc(100vw - 50%)',
+                overflowX: 'hidden',
+                overflowY: 'scroll',
+              } :{
+                fontSize: fontSize,
+                transition: '0.5s all',
+                position: 'relative',
+                left: '0%',
+              }}
+            >
+              <h4 onClick={() => {              
+                if(isLarivaar) {
+                  setLarivaarAssist({...larivaarAssist, lineIndex: idx, expand: true});
+                  setTimeout(() => {
+                    setLarivaarAssist({...larivaarAssist, lineIndex: null, expand: false})
+                  }, 5000);
+                }
+              }}>
+                {isEnglish ? englishTuk: tuk?.map((ele, index) => 
+                {
+                  return (
+                    <span className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''} style={
+                      {
+                        marginRight: (larivaarAssist.expand && larivaarAssist.lineIndex === idx) && '10px', 
+                        transition: 'margin 0.5s',
+                      }
+                      }>{ele + (!isLarivaar ? " " : '')}</span>)}
+                  )
+                }
+              </h4>
+            <div className="meaningsGroup">
+                {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
+                {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5}} className='gurmukhiMeanings'>{punjabiMeaning}</p>}
+              </div>
             </div>
+          );
+        }
+        )}
+
+        {
+          shabadId && <div className='shabadNavigation tuk'>
+            <Button onClick={() => {
+              setShabadID(baniData.previous)
+            }}>{'Previous'}</Button>
+            <Button onClick={() => {
+              setShabadID(baniData.next)
+            }}>{'Next'}</Button>
           </div>
-        );
-      }
-      )}
+        }
 
-      {
-        shabadId && <div className='shabadNavigation tuk'>
-          <Button onClick={() => {
-            setShabadID(baniData.previous)
-          }}>{'Previous'}</Button>
-          <Button onClick={() => {
-            setShabadID(baniData.next)
-          }}>{'Next'}</Button>
-        </div>
-      }
-
+      </div>
     </div>
   );
 }

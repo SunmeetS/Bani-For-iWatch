@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { BaniContext, fetcher } from './App'
+import { BaniContext } from './main'
 import { Button, CircularProgress, Input } from '@mui/joy'
 import './App.less'
-import Bani from './Bani'
 import { utils } from './utils'
 import { toEnglish, toUnicode } from 'gurmukhi-utils'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {}
 
@@ -14,6 +14,7 @@ const Shabads = (props: Props) => {
     const [searchInput, setSearchInput] = useState('');
     const { shabadID, setShabadID, setRoute, setSearch, setBaniName, search, statusText, setStatusText, isEnglish} = useContext(BaniContext);
     const { fetchShabads } = utils()
+    const navigate = useNavigate()
 
     useEffect(() => {
         return(
@@ -35,7 +36,8 @@ const Shabads = (props: Props) => {
     }
 
     return (
-        <div className='shabad-main Banis'>
+       <div className="App">
+         <div className='shabad-main Banis'>
             {
                 !shabadID && <>
                     <div className="inputGroup">
@@ -62,6 +64,7 @@ const Shabads = (props: Props) => {
                                         setShabadID(shabad.shabadId);
                                         setBaniName(baniName);
                                         setRoute(baniName)
+                                        navigate('/bani')
                                     }} className='bani'>
                                         {isEnglish ? englishTuk : tuk}
                                     </h1>
@@ -72,6 +75,7 @@ const Shabads = (props: Props) => {
                 </>
             }
         </div>
+       </div>
     )
 }
 

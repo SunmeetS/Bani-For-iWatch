@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Bani, isGurmukhiWord, removeMatras } from './utils';
 import './App.less'
-import { BaniContext } from './App.jsx'
-
-
+import { BaniContext } from './main.jsx'
+import { useNavigate } from 'react-router-dom';
 
 const Banis = () => {
   const { banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setRoute, setBaniName, baniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
   useEffect(() => {
-    const filtered = banis.filter((bani) => {
+    const filtered = banis?.filter((bani) => {
       let searchFrom = (isGurmukhiWord(search) ? bani.gurmukhiUni : bani.transliteration).split(' ').join('');
       if (isGurmukhiWord(searchFrom)) {
         searchFrom = removeMatras(searchFrom);
@@ -20,10 +19,11 @@ const Banis = () => {
     setFilteredBanis(filtered)
   }, [search]);
 
-  useEffect(() => {console.log(baniName)}, [baniName])
+  const navigate = useNavigate()
 
   const isMobile = window.innerWidth <= 425
   return (
+   <div className='App'>
     <div key={'Banis'} className='Banis' style={(expandCustomisations && !isMobile) ? { position: 'absolute', left: '15%', transition: '0.5s all' } :
       { position: 'absolute', left: '0', transition: '0.5s all' }}>
       {
@@ -36,6 +36,7 @@ const Banis = () => {
               setBaniID(bani.ID);
               setBaniName(tuk)
               setRoute(tuk)
+              navigate('/bani')
             }}
             style={{ fontSize: fontSize }}
             key={bani.ID}
@@ -46,6 +47,7 @@ const Banis = () => {
         )
       }
     </div>
+   </div>
   )
 }
 
