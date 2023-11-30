@@ -78,6 +78,10 @@ const Bani = ({ baniId, shabadId }) => {
     containerRef?.current?.addEventListener('scroll', throttledScroll)
   }, [shabadId, baniId])
 
+  useEffect(() => {
+    handleSearch()
+  }, [search])
+
   const scrollToFoundShabad = () => {
     if (foundShabadIndex !== null) {
       const shabadChildren: (HTMLElement | undefined)[] = containerRef.current.children
@@ -95,6 +99,7 @@ const Bani = ({ baniId, shabadId }) => {
 
   const handleSearch = (bani = null) => {
     if(bani) baniData = bani;
+    console.log(baniData)
     for (let i = 0; i < baniData.details.length; i++) {
       const tuk = removeMatras(baniData?.details?.[i]?.tuk);
       const tukFirstLetters: string = getFirstLetters(tuk).join('');
