@@ -145,10 +145,6 @@ h1, h2, h3, h4, h5, h6, p, span {
     margin: 0 2vw;
 }
 
-.liveAudio {
-    margin-top: @padding-lg;
-}
-
 .larivaarAssist {
     color: var(--larivaarAssistFontColor)
 }
@@ -176,13 +172,40 @@ h1, h2, h3, h4, h5, h6, p, span {
     }
 }
 
-.darbarSahibImage {
-    height: 85vh;
-    width: 90vw;
-    object-fit: cover;
+.liveAudio {
+    justify-content: center;
+    >* {
+        margin: @padding-sm;
+    }
+}
+
+.chooseGurudwara {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.button {
+    color: var(--mainBackgroundColor);
+    margin: @padding-sm;
+    max-width: 400px;
+    cursor: pointer;
+}
+
+.gurudwaraImage {
+    height: 60vh;
+    width: 80vw;
+    max-height: 70vh;
+    max-width: 90vw;
+    object-fit: contain;
     object-position: 35%;
     border-radius: 1rem;
     box-shadow: 1px 1px 1px 1px white, -1px -1px 1px 1px white;
+    video {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
 }
 
 .buttonGroup, .buttonGroupNoMarginTop {

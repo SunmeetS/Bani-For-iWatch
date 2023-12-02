@@ -5,7 +5,7 @@ import { BaniContext } from './main.jsx'
 import { useNavigate } from 'react-router-dom';
 
 const Banis = () => {
-  const { banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setRoute, setBaniName, baniName } = useContext(BaniContext);
+  const { banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setHeading, setBaniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
   useEffect(() => {
     const filtered = banis?.filter((bani) => {
@@ -35,7 +35,7 @@ const Banis = () => {
             onClick={() => {
               setBaniID(bani.ID);
               setBaniName(tuk)
-              setRoute(tuk)
+              setHeading(tuk)
               navigate('/bani')
             }}
             style={{ fontSize: fontSize }}

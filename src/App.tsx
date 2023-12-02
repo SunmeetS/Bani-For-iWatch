@@ -34,34 +34,30 @@ export function getFromLS(key) {
 
 function App() {
   const appRef = React.useRef()
-  const [route, setRoute] = useState('')
   
   const navigate = useNavigate()
 
   return (
       <div ref={appRef} className="App">
-        {route === '' && <div className="homeScreen">
+        <div className="homeScreen">
           <>
             <h1 onClick={() => {
-              setRoute('Find a Shabad');
               navigate('/find-a-shabad')
             }} className='tuk'>
               Search a Shabad
             </h1>
             <h1 onClick={() => {
-              setRoute('Beant Baaniyan');
               navigate('/beant-baaniyan')
             }} className='tuk'>
               Read a Bani
             </h1>
             <h1 onClick={() => {
-              setRoute('Darbar Sahib Live');
               navigate('/darbar-sahib-live')
             }} className='tuk'>
-              Darbar Sahib Live Audio
+              Live Kirtan From Itihaasik Gurudwaras
             </h1>
           </>
-        </div>}
+        </div>
       </div>
   )
 }

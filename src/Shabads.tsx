@@ -12,7 +12,7 @@ const Shabads = (props: Props) => {
 
     const [shabads, setShabads] = useState({ verses: [] });
     const [searchInput, setSearchInput] = useState('');
-    const { shabadID, setShabadID, setRoute, setSearch, setBaniName, search, statusText, setStatusText, isEnglish} = useContext(BaniContext);
+    const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText, setStatusText, isEnglish} = useContext(BaniContext);
     const { fetchShabads } = utils()
     const navigate = useNavigate()
 
@@ -27,7 +27,7 @@ const Shabads = (props: Props) => {
     useEffect(() => {setShabadID}, [shabadID])
 
     const updateShabads = () => {
-        setStatusText(<CircularProgress style={{margin: '1rem'}} />)
+        setStatusText?.(<CircularProgress style={{margin: '1rem'}} />)
         fetchShabads(search).then((shabads) => {
             if(shabads.verses.length === 0) setStatusText('No Shabads Found');
             else setStatusText(null)
@@ -63,7 +63,7 @@ const Shabads = (props: Props) => {
                                     <h1 onClick={() => {
                                         setShabadID(shabad.shabadId);
                                         setBaniName(baniName);
-                                        setRoute(baniName)
+                                        setHeading(baniName)
                                         navigate('/bani')
                                     }} className='bani'>
                                         {isEnglish ? englishTuk : tuk}

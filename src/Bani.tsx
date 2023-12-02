@@ -99,7 +99,6 @@ const Bani = ({ baniId, shabadId }) => {
 
   const handleSearch = (bani = null) => {
     if(bani) baniData = bani;
-    console.log(baniData)
     for (let i = 0; i < baniData.details.length; i++) {
       const tuk = removeMatras(baniData?.details?.[i]?.tuk);
       const tukFirstLetters: string = getFirstLetters(tuk).join('');
