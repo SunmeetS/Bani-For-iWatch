@@ -31,6 +31,7 @@ function Main() {
   const [baniName, setBaniName] = useState('')
   const [mode, setMode] = useState('dark')
   const [statusText, setStatusText] = useState<any>();
+  const [isWrap, setIsWrap] = useState(false);
 
   const [isLarivaar, setIsLarivaar] = useState(false)
   let [fontSize, setFontSize] = useState(34);
@@ -84,7 +85,7 @@ function Main() {
       element: <Bani shabadId={shabadID} baniId={baniID}/>
     },
     {
-      path: 'darbar-sahib-live',
+      path: '/live-audio',
       element: <LiveAudio/>
     },
     {
@@ -141,6 +142,9 @@ function Main() {
     <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'autoScroll'} className='customisation'>
       <Checkbox checked={scrolling.status} className='checkbox' onChange={(e) => setScrolling({ ...scrolling, status: e.target.checked })} label='Auto Scroll' />
     </div>,
+    <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'isWrap'} className='customisation'>
+      <Checkbox checked={isWrap} className='checkbox' onChange={(e) => setIsWrap(e.target.checked )} label='Wrap gurbani' />
+    </div>,
     <div style={{ display: scrolling.status ? 'flex' : 'none' }} key={'scrollSpeed'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Scroll Speed">
         <Button onClick={() => setScrolling({ ...scrolling, speed: scrolling.speed + 1 })}>+</Button>
@@ -162,13 +166,13 @@ function Main() {
   const root = document.querySelector(':root') as HTMLElement;
 
   if (mode === 'dark') {
-    root.style.setProperty('--mainFontColor', 'rgba(255, 193, 87, 0.888)')
+    root.style.setProperty('--mainFontColor', '#90b4f9')
     root.style.setProperty('--mainBackgroundColor', 'rgb(0 10 36)')
-    root.style.setProperty('--titleFontColor', 'rgb(0, 185, 247)');
-    root.style.setProperty('--gurmukhiMeaningsFontColor', 'lightGreen')
+    root.style.setProperty('--titleFontColor', '#e48b00');
+    root.style.setProperty('--gurmukhiMeaningsFontColor', '#e0e7ffd6')
     root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
-    root.style.setProperty('--larivaarAssistFontColor', 'rgb(185 117 0)');
-    root.style.setProperty('--headerBackgroundColor', 'rgba(255, 193, 87)');
+    root.style.setProperty('--larivaarAssistFontColor', '#90b4f99e');
+    root.style.setProperty('--headerBackgroundColor', '#90b4f9');
     root.style.setProperty('--headerFontColor', 'black');
   }
   if (mode === 'light') {
@@ -198,16 +202,13 @@ function Main() {
     }
     else {
       document.exitFullscreen?.()
-      setFontSize(34);
+      setFontSize(26);
     }
   }, [presenterMode])
 
   useEffect(() => {
-    const savedBanis = getFromLS('banisList')
-    if (!savedBanis) {
       fetchBanis().then(banis => {
         setBanis(banis)
-        saveToLS('banisList', JSON.stringify(banis));
 
         setTimeout(() => {
           (banis).slice(0, 30).map((bani) => {
@@ -220,9 +221,6 @@ function Main() {
           })
         }, 3000);
       })
-    } else {
-      setBanis((savedBanis))
-    }
 
     if(!localStorage.getItem('cleared')) {
       localStorage.clear();
@@ -237,7 +235,8 @@ function Main() {
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
-      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, statusText, setStatusText
+      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, 
+      statusText, setStatusText, isWrap, setIsWrap
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
           <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >

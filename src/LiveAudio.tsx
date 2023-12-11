@@ -7,8 +7,7 @@ type Props = {}
 
 const LiveAudio = (props: Props) => {
   const baniContext = useContext(BaniContext);
-  const {setHeading, heading} = baniContext
-  
+  const {setHeading} = baniContext  
   const audioRef = useRef(null);
   const [selectedGurudwara, setSelectedGurudwara] = useState<{
     liveLink?: string,
@@ -19,31 +18,13 @@ const LiveAudio = (props: Props) => {
     status: true, 
     message: `Please Wait. It usually takes around 10 - 15 Seconds to fetch Live Gurbani from Gurudwara Sahib...`
   })
-  
-  useEffect(() => {
-    let elapsedSeconds = 0;
-
-    const intervalId = setInterval(() => {
-      elapsedSeconds++;
-
-      if (elapsedSeconds === 7) {
-        setLoading({
-          ...loading,
-          message: "Please wait, still loading..."
-        });
-        clearInterval(intervalId); 
-      } 
-      
-    }, 1000);
-
-  }, [selectedGurudwara.liveLink]); 
 
   useEffect(() => {
     const handlePlay = () => {
-      setLoading({message: `Please Wait. It usually takes around 10 - 15 Seconds to fetch Live Gurbani from Gurudwara Sahib...`, status: false});
+      setLoading({...loading, status: false});
     };
 
-    const audioElement = audioRef.current;
+    const audioElement = audioRef?.current;
 
     if (audioElement) {
       audioElement.addEventListener('play', handlePlay);

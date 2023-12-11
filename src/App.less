@@ -16,6 +16,8 @@
     }
     >* {
         margin: @padding-sm;
+        font-size: 25px !important;
+        height: 4rem;
     }
     width: clamp(302px, 90vw, 800.8px);
     flex-wrap: wrap;
@@ -23,6 +25,7 @@
     justify-content: center;
 }
 
+@padding-xs: 0.25rem;
 @padding-sm: 0.5rem;
 @padding-md: 1rem;
 @padding-lg: 1.5rem;
@@ -72,14 +75,11 @@ h1, h2, h3, h4, h5, h6, p, span {
     }
 }
 
-.tuk, .bani {
-    color: var(--mainFontColor);
-    padding: @padding-sm 0vw;
-}
 .bani {
     width: 100vw;
     border-bottom: 0.1px solid var(--mainFontColor);
     cursor: pointer;
+    margin: 0 2vw;
 }
 .foundShabad {
     border: 3px dashed var(--headerBackgroundColor)
@@ -95,6 +95,9 @@ h1, h2, h3, h4, h5, h6, p, span {
 .shabadNavigation {
     display: flex;
     justify-content: space-between;
+    background-color: var(--mainBackgroundColor);
+    position: fixed;
+    bottom: 0;
     >* {
         background-color: var(--mainFontColor);
         color: var(--mainBackgroundColor);
@@ -104,6 +107,7 @@ h1, h2, h3, h4, h5, h6, p, span {
         cursor: pointer;
     }
     padding: @padding-md;
+    width: calc(100vw - @padding-md*2)
 }
 
 .presenter {
@@ -116,6 +120,7 @@ h1, h2, h3, h4, h5, h6, p, span {
     >* {
         margin: 1rem
     };
+    line-break: anywhere;
 }
 
 .index {
@@ -133,16 +138,11 @@ h1, h2, h3, h4, h5, h6, p, span {
 }
 
 .Bani {
-    height: calc(100vh - var(--customisationsHeight));
+    height: calc(100vh - var(--customisationsHeight)*2);
     overflow-x: scroll;
     scroll-snap-type: y mandatory;
-    padding-top: var(--customisationsHeight);
-}
-
-.tuk {
-    width: 84vw;
-    padding: 1vw 5vw;
-    margin: 0 2vw;
+    padding: var(--customisationsHeight) @padding-xs;
+    line-break: anywhere;
 }
 
 .larivaarAssist {
@@ -157,18 +157,37 @@ h1, h2, h3, h4, h5, h6, p, span {
     position: absolute;
     top: 0rem;
     z-index: 1;
-    background-color: var(--headerBackgroundColor);
-    box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.224);
-    transition: 0.5s all;
+    transition: 0.5s all ease-out;
     left: 0;
     >* {
-        color: var(--headerFontColor) !important
+        color: var(--mainFontColor) !important
     }
     @media @mobile {
         h1 {
             width: 80%;
             overflow-x: scroll;
         }
+    }
+    svg {
+        fill: var(--mainFontColor)
+    }
+    background-color: var(--mainBackgroundColor);
+}
+
+.expandCustomisations {
+    position: absolute;
+    width: calc(100vw - 2vw);
+    height: 90vh;
+    flex-direction: column;
+    align-items: start;
+    overflow-y: scroll;
+    padding: 5vh 1vw;
+    @media @mobile {
+        width: 100%;
+    }
+    background-color: var(--headerBackgroundColor);
+    svg {
+        fill: var(--mainBackgroundColor);
     }
 }
 
@@ -186,10 +205,15 @@ h1, h2, h3, h4, h5, h6, p, span {
 }
 
 .button {
-    color: var(--mainBackgroundColor);
+    color: var(--mainBackgroundColor) !important;
     margin: @padding-sm;
     max-width: 400px;
     cursor: pointer;
+    background-color: var(--mainFontColor);
+    padding: 0.5rem 1rem !important;
+    border-radius: @padding-md;
+    outline: none;
+    border: none;
 }
 
 .gurudwaraImage {
@@ -216,6 +240,12 @@ h1, h2, h3, h4, h5, h6, p, span {
         width: max-content;
     }
     width: 100%;
+    svg {
+        height: 1.5rem;
+    }
+    >* {
+        font-size: 1.5rem;
+    }
 }
 .buttonGroupNoMarginTop {
     flex-wrap: wrap;
@@ -223,20 +253,6 @@ h1, h2, h3, h4, h5, h6, p, span {
         margin-top: 0rem !important;
         margin-left: 0rem !important
     }
-}
-
-.expandCustomisations {
-    position: absolute;
-    width: 250px;
-    height: 90vh;
-    flex-direction: column;
-    align-items: start;
-    overflow-y: scroll;
-    padding: 5vh 1vw;
-    @media @mobile {
-        width: 100%;
-    }
-    
 }
 .customisations::-webkit-scrollbar {
     display: none;
@@ -259,8 +275,17 @@ h1, h2, h3, h4, h5, h6, p, span {
     color: red;
 }
 
+.navigation {
+    padding: @padding-sm @padding-md !important;
+}
+
 .bani, .tuk {
     font-size: x-large;
+    margin: 0 2vw;
+    color: var(--mainFontColor);
+    @media @mobile {
+        text-align: start;
+    }
 }
 
 .title {

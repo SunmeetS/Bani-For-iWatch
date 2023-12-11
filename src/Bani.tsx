@@ -14,17 +14,20 @@ const Bani = ({ baniId, shabadId }) => {
 });
   const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, 
   showPunjabiMeaning, presenterMode, search, throttledScroll,  
-  scrolling, expandCustomisations,larivaarAssist, setLarivaarAssist, setShabadID, statusText, setStatusText } = useContext(BaniContext) ?? {}
+  scrolling,larivaarAssist, setLarivaarAssist, setShabadID, 
+  statusText, setStatusText, setHeading, isWrap } = useContext(BaniContext) ?? {}
   const {fetchBani, fetchShabad} = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
+    setHeading('Beant Baaniyan')
     setStatusText(<CircularProgress style={{margin: '1rem'}} />)
     return () => {
       setBaniID(null);
       setShabadID(null);
-      setStatusText(null)
+      setStatusText(null);
+      setHeading('')
     }
   }, [])
 
@@ -111,38 +114,38 @@ const Bani = ({ baniId, shabadId }) => {
     }
   };
 
+  let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}`
+  const wrapTuk = [];
+  baniData?.details?.forEach(({tuk}) => wrapTuk.push(...tuk.split(' ')))
 
   return (
     <div className='App'>
       <div className='Bani' ref={containerRef}>
         {statusText && statusText}
-        {baniData?.details?.map((verse, idx) => {
+
+        {isWrap && wrapTuk.map((ele, index) => {
+          return (
+            <span style={{fontSize: fontSize}} className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''}>
+              {ele + (!isLarivaar ? " " : '')}
+            </span>
+          )
+        })}
+        
+        {!isWrap && baniData?.details?.map((verse, idx) => {
 
           let {tuk, englishTuk, englishMeaning, punjabiMeaning} = verse ?? {}
 
           tuk = tuk?.split(' ');
 
-          let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}
-            ${ idx === 0 ? 'title' : ''}`;
-          if(presenterMode) className = 'presenter'; 
+          let className2 = className;
+
+          idx === 0 ? className2 += 'title' : '';
+          if(presenterMode) className2 = 'presenter'; 
           
           return (
             <div
-              className={className}
-              style={(!isMobile && expandCustomisations) ? {
-                transition: '0.5s all',
-                fontSize: fontSize,
-                position: 'relative',
-                left: '30%',
-                width: 'calc(100vw - 50%)',
-                overflowX: 'hidden',
-                overflowY: 'scroll',
-              } :{
-                fontSize: fontSize,
-                transition: '0.5s all',
-                position: 'relative',
-                left: '0%',
-              }}
+              className={className2}
+              
             >
               <h4 onClick={() => {              
                 if(isLarivaar) {
@@ -152,29 +155,30 @@ const Bani = ({ baniId, shabadId }) => {
                   }, 5000);
                 }
               }}>
-                {isEnglish ? englishTuk: tuk?.map((ele, index) => 
+                {isEnglish ? englishTuk: tuk?.map((ele: string, index: number) => 
                 {
                   return (
-                    <span className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''} style={
+                    <span className={(larivaarAssist.state && index % 2 && idx != 0) ? 'larivaarAssist' : ''} style={
                       {
                         marginRight: (larivaarAssist.expand && larivaarAssist.lineIndex === idx) && '10px', 
                         transition: 'margin 0.5s',
+                        fontSize: fontSize
                       }
                       }>{ele + (!isLarivaar ? " " : '')}</span>)}
                   )
                 }
               </h4>
-            <div className="meaningsGroup">
+             { (englishMeaning || punjabiMeaning) && <div className="meaningsGroup">
                 {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
                 {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5}} className='gurmukhiMeanings'>{punjabiMeaning}</p>}
-              </div>
+              </div>}
             </div>
           );
         }
         )}
 
         {
-          shabadId && <div className='shabadNavigation tuk'>
+          shabadId && <div className='shabadNavigation'>
             <Button onClick={() => {
               setShabadID(baniData.previous)
             }}>{'Previous'}</Button>

@@ -69,6 +69,7 @@ export const debounce = (func, delay) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       func.apply(context, args);
+      func()
     }, delay);
   };
 };
@@ -114,6 +115,7 @@ export function getFirstLetters(text) {
       }
       
       const fetchShabads = async (searchInput: string) => {
+        if(searchInput.length < 3) return;
         const searchShabadsUrl = `${API_URL}search/${searchInput}?source=all&searchtype=1&writer=all&page=1&livesearch=1`
         const shabads = await fetcher(searchShabadsUrl)
         return shabads

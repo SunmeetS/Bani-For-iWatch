@@ -43,17 +43,17 @@ function App() {
           <>
             <h1 onClick={() => {
               navigate('/find-a-shabad')
-            }} className='tuk'>
+            }} className='tuk navigation'>
               Search a Shabad
             </h1>
             <h1 onClick={() => {
               navigate('/beant-baaniyan')
-            }} className='tuk'>
+            }} className='tuk navigation'>
               Read a Bani
             </h1>
             <h1 onClick={() => {
-              navigate('/darbar-sahib-live')
-            }} className='tuk'>
+              navigate('/live-audio')
+            }} className='tuk navigation'>
               Live Kirtan From Itihaasik Gurudwaras
             </h1>
           </>
