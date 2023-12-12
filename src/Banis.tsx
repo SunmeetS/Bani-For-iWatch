@@ -67,7 +67,7 @@ const Banis = () => {
             }}
             style={{ fontSize: fontSize }}
             key={bani.ID}
-            className='bani'>
+            className='bani baniName'>
             {isEnglish ? englishTuk : tuk}
           </div>
         }

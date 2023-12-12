@@ -107,7 +107,7 @@ const Bani = ({ baniId, shabadId }) => {
   }, [foundShabadIndex])
 
   const scrollToFoundShabad = () => {
-    if (foundShabadIndex !== null) {
+    if (foundShabadIndex?.current) {
       const shabadChildren: (HTMLElement | undefined)[] = containerRef.current.children
       const prevShabad = shabadChildren[foundShabadIndex?.previous]
       const shabadElement = shabadChildren[foundShabadIndex?.current];
