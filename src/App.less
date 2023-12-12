@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6, p, span {
     background-color: var(--mainBackgroundColor);
     height: calc(100vh - var(--customisationsHeight););
     padding-top: var(--customisationsHeight);
-    overflow: scroll;
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -152,6 +152,7 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .baniName {
     padding-left: @padding-md;
+    width: calc(100vw - @padding-md*2);
 }
 
 .larivaarAssist {
