@@ -30,7 +30,7 @@ export function saveToLS(key, value) {
 
 export function getFromLS(key) {
   try {
-    const dataFromLS = JSON.parse(JSON.parse(localStorage.getItem(key)))
+    const dataFromLS = JSON.parse(localStorage.getItem(key))
     return dataFromLS;
   } catch (err) {
     return;

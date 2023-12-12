@@ -3,11 +3,14 @@ import { Bani, baniCache, isGurmukhiWord, removeMatras, utils } from './utils';
 import './App.less'
 import { BaniContext } from './main.jsx'
 import { useNavigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/joy';
 
 const Banis = () => {
   const { banis, setBanis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setHeading, setBaniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
   const {fetchBani, fetchBanis} = utils();
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const filtered = banis?.filter((bani) => {
@@ -22,6 +25,7 @@ const Banis = () => {
   }, [search]);
 
   useEffect(() => {
+    setLoading(true);
     fetchBanis().then(banis => {
       setBanis(banis)
     })
@@ -34,8 +38,13 @@ const Banis = () => {
         baniCache.bani[bani.ID] = true;
         return res
       }
-    })).then(() => {})
-    .catch(() => {})
+    })).then(() => {
+      setLoading(false);
+    })
+    .catch(() => {
+      console.log('error in pre-fetching the banis')
+      setLoading(false);
+    })
   }, [banis])
 
   const navigate = useNavigate()
@@ -43,9 +52,9 @@ const Banis = () => {
   const isMobile = window.innerWidth <= 425
   return (
    <div className='App'>
-    <div key={'Banis'} className='Banis' style={(expandCustomisations && !isMobile) ? { position: 'absolute', left: '15%', transition: '0.5s all' } :
-      { position: 'absolute', left: '0', transition: '0.5s all' }}>
+    <div key={'Banis'} className='Banis'>
       {
+        loading ? <CircularProgress /> : 
         (filteredBanis?.length ? filteredBanis : banis)?.map((bani) => {
           let tuk = bani.gurmukhiUni, englishTuk = bani.transliteration;
           if (isLarivaar) tuk = tuk.split(' ').join('');

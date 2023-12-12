@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getFirstLetters, removeMatras, utils } from './utils';
 import { BaniContext } from './main';
 import { Button, CircularProgress } from '@mui/joy';
+import { getFromLS, saveToLS } from './App';
 
 
 const Bani = ({ baniId, shabadId }) => {
@@ -11,7 +12,7 @@ const Bani = ({ baniId, shabadId }) => {
     previous: '',
     next: '',
 });
-  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setLoading, setError, 
+  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setError, 
   showPunjabiMeaning, presenterMode, search, throttledScroll,  
   scrolling,larivaarAssist, setLarivaarAssist, setShabadID, 
   statusText, setStatusText, setHeading, isWrap } = useContext(BaniContext) ?? {}
@@ -20,6 +21,15 @@ const Bani = ({ baniId, shabadId }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    const { baniId, shabadId } = getFromLS('current');
+
+    if (baniId) {
+      setBaniID(baniId);
+    }
+
+    if (shabadId) {
+      setShabadID(shabadId);
+    }
     setHeading('Beant Baaniyan')
     setStatusText(<CircularProgress style={{margin: '1rem'}} />)
     return () => {
@@ -60,6 +70,7 @@ const Bani = ({ baniId, shabadId }) => {
       fetchBani(baniId).then(bani => {
         setBaniData(bani);
         setStatusText(null);
+        saveToLS('current', {baniId});
       }).catch(() => {
         setStatusText('Failed to load Bani data');
       })
@@ -69,6 +80,7 @@ const Bani = ({ baniId, shabadId }) => {
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
+        saveToLS('current', {shabadId});
         const fetchPromises = [];
 
         for (let i = 0; i < 10; i++) {
