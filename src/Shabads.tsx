@@ -32,7 +32,7 @@ const Shabads = (props: Props) => {
     useEffect(() => { setShabadID }, [shabadID])
 
     const updateShabads = () => {
-        if(!search) return;
+        if(search.length < 3) return;
         setStatusText?.(<CircularProgress style={{ margin: '1rem' }} />)
         fetchShabads(search).then((shabads) => {
             if (shabads.verses.length === 0) setStatusText('No Shabads Found');
