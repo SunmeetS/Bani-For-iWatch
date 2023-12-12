@@ -21,14 +21,16 @@ const Bani = ({ baniId, shabadId }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const { baniId, shabadId } = getFromLS('current');
+    if(!baniId && !shabadId){
+      const { baniId, shabadId } = getFromLS('current');
 
-    if (baniId) {
-      setBaniID(baniId);
-    }
+      if (baniId) {
+        setBaniID(baniId);
+      }
 
-    if (shabadId) {
-      setShabadID(shabadId);
+      if (shabadId) {
+        setShabadID(shabadId);
+      }
     }
     setHeading('Beant Baaniyan')
     setStatusText(<CircularProgress style={{margin: '1rem'}} />)

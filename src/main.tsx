@@ -64,11 +64,11 @@ function Main() {
     });
   }, 100);
   const setOpacity = () => {
-    if(expandCustomisations) return 1;
-    const { prev, current } = scrollPosition
-    if (current < 20) return '1';
-    if (scrolling.status || current < prev) return '0.9';
-    if (current > prev) return '0';
+    return '0.9';
+    // const { prev, current } = scrollPosition
+    // if (current < 20) return '1';
+    // if (scrolling.status || current < prev) return '0.9';
+    // if (current > prev) return '0';
   }
 
   const router = createBrowserRouter([
@@ -177,12 +177,12 @@ function Main() {
   }
   if (mode === 'light') {
     root.style.setProperty('--mainFontColor', '#1a00ba')
-    root.style.setProperty('--mainBackgroundColor', '#e8e8e8')
+    root.style.setProperty('--mainBackgroundColor', '#2300fb17')
     root.style.setProperty('--titleFontColor', 'rgb(175 0 192 / 81%)');
     root.style.setProperty('--gurmukhiMeaningsFontColor', '#8d2773d9')
     root.style.setProperty('--englishMeaningsFontColor', '#056700');
     root.style.setProperty('--larivaarAssistFontColor', '#0072ddd1');
-    root.style.setProperty('--headerBackgroundColor', '#1a00ba');
+    root.style.setProperty('--headerBackgroundColor', '#070030c9');
     root.style.setProperty('--headerFontColor', 'white');
   }
 
