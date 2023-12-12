@@ -64,11 +64,10 @@ function Main() {
     });
   }, 100);
   const setOpacity = () => {
-    return '0.9';
-    // const { prev, current } = scrollPosition
-    // if (current < 20) return '1';
-    // if (scrolling.status || current < prev) return '0.9';
-    // if (current > prev) return '0';
+    const { prev, current } = scrollPosition
+    if (current < 20) return '1';
+    if (scrolling.status || current < prev) return '0.9';
+    if (current > prev) return '0';
   }
 
   const router = createBrowserRouter([
