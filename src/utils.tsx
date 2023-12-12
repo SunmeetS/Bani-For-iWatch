@@ -69,7 +69,6 @@ export const debounce = (func, delay) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       func.apply(context, args);
-      func()
     }, delay);
   };
 };
@@ -108,7 +107,7 @@ export function getFirstLetters(text) {
   return firstLetters;
 }
 
-
+export const baniCache = {bani: {}, shabad: {}};
     export function utils() {
       async function fetchBanis() {
         return await fetcher(API_URL + '/banis');

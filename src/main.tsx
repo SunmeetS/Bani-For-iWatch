@@ -25,7 +25,6 @@ function Main() {
 
   updateSW()
 
-  const [banis, setBanis] = useState([]);
   const [expandCustomisations, setExpandCustomisations] = useState(false);
   const [shabadID, setShabadID] = useState()
   const [baniName, setBaniName] = useState('')
@@ -38,6 +37,7 @@ function Main() {
   const [showEnglishMeaning, setShowEnglishMeaning] = useState(true)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [banis, setBanis] = useState([]);
 
   const { fetchBani, fetchBanis } = utils()
   const [baniID, setBaniID] = useState()
@@ -207,21 +207,6 @@ function Main() {
   }, [presenterMode])
 
   useEffect(() => {
-      fetchBanis().then(banis => {
-        setBanis(banis)
-
-        setTimeout(() => {
-          (banis).slice(0, 30).map((bani) => {
-            const { ID } = bani
-            const currentlyPresent = getFromLS('bani' + ID);
-            if (!currentlyPresent)
-              fetchBani(ID).then(bani => {
-                if (bani) saveToLS('bani' + ID, JSON.stringify(bani))
-              })
-          })
-        }, 3000);
-      })
-
     if(!localStorage.getItem('cleared')) {
       localStorage.clear();
       localStorage.setItem('cleared', 'true')

@@ -82,7 +82,12 @@ h1, h2, h3, h4, h5, h6, p, span {
     margin: 0 2vw;
 }
 .foundShabad {
-    border: 3px dashed var(--headerBackgroundColor)
+    border: 3px dotted var(--headerBackgroundColor);
+    padding: @padding-sm;
+    margin: @padding-xs !important;
+    @media @mobile {
+        width: fit-content;
+    }
 }
 
 .center {

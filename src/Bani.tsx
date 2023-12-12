@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getFirstLetters, removeMatras, utils } from './utils';
-import { isMobile } from './App.jsx'
 import { BaniContext } from './main';
 import { Button, CircularProgress } from '@mui/joy';
 
@@ -60,7 +59,6 @@ const Bani = ({ baniId, shabadId }) => {
     if(baniId) {
       fetchBani(baniId).then(bani => {
         setBaniData(bani);
-        handleSearch(bani);
         setStatusText(null);
       }).catch(() => {
         setStatusText('Failed to load Bani data');
@@ -68,10 +66,17 @@ const Bani = ({ baniId, shabadId }) => {
     }
 
     if(shabadId) {
-      fetchShabad(shabadId).then((data) => {
+      fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
-        handleSearch(data);
         setStatusText(null);
+        const fetchPromises = [];
+
+        for (let i = 0; i < 10; i++) {
+          fetchPromises.push(fetchShabad(shabadId - i));
+          fetchPromises.push(fetchShabad(shabadId + i));
+        }
+
+        Promise.all(fetchPromises).then(() => {});
       }).catch(() => {
         setStatusText('Failed to load Shabad data')
       });
@@ -83,7 +88,11 @@ const Bani = ({ baniId, shabadId }) => {
 
   useEffect(() => {
     handleSearch()
-  }, [search])
+  }, [baniData])
+
+  useEffect(() => {
+    scrollToFoundShabad()
+  }, [foundShabadIndex])
 
   const scrollToFoundShabad = () => {
     if (foundShabadIndex !== null) {
@@ -184,6 +193,7 @@ const Bani = ({ baniId, shabadId }) => {
             }}>{'Previous'}</Button>
             <Button onClick={() => {
               setShabadID(baniData.next)
+              containerRef.current.scrollTop = 0
             }}>{'Next'}</Button>
           </div>
         }

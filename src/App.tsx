@@ -2,15 +2,20 @@ import { useState } from 'react';
 import './App.less'
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { baniCache } from './utils';
 
 export const isMobile = window.innerWidth <= 425
 
 export const API_URL = 'https://api.banidb.com/v2/';
 export async function fetcher(url) {
   try {
+    if(baniCache[url]) {
+      return baniCache[url];
+    }
     const response = await fetch(url);
     const data = await response.json();
-    return data;
+    baniCache[url] = data;
+    return baniCache[url];
   } catch (err) {
     console.log(err)
   }

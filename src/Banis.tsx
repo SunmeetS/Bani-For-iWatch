@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Bani, isGurmukhiWord, removeMatras } from './utils';
+import { Bani, baniCache, isGurmukhiWord, removeMatras, utils } from './utils';
 import './App.less'
 import { BaniContext } from './main.jsx'
 import { useNavigate } from 'react-router-dom';
 
 const Banis = () => {
-  const { banis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setHeading, setBaniName } = useContext(BaniContext);
+  const { banis, setBanis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setHeading, setBaniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
+  const {fetchBani, fetchBanis} = utils();
+
   useEffect(() => {
     const filtered = banis?.filter((bani) => {
       let searchFrom = (isGurmukhiWord(search) ? bani.gurmukhiUni : bani.transliteration).split(' ').join('');
@@ -19,6 +21,23 @@ const Banis = () => {
     setFilteredBanis(filtered)
   }, [search]);
 
+  useEffect(() => {
+    fetchBanis().then(banis => {
+      setBanis(banis)
+    })
+  }, [])
+
+  useEffect(() => {
+    Promise.all(banis?.map(async (bani) => {
+      if(!baniCache.bani[bani.ID]) {
+        let res = fetchBani(bani.ID);
+        baniCache.bani[bani.ID] = true;
+        return res
+      }
+    })).then(() => {})
+    .catch(() => {})
+  }, [banis])
+
   const navigate = useNavigate()
 
   const isMobile = window.innerWidth <= 425
@@ -28,8 +47,7 @@ const Banis = () => {
       { position: 'absolute', left: '0', transition: '0.5s all' }}>
       {
         (filteredBanis?.length ? filteredBanis : banis)?.map((bani) => {
-          let tuk = bani.gurmukhiUni,
-            englishTuk = bani.transliteration;
+          let tuk = bani.gurmukhiUni, englishTuk = bani.transliteration;
           if (isLarivaar) tuk = tuk.split(' ').join('');
           return <div
             onClick={() => {
