@@ -12,29 +12,29 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@fontsource/inter": "^5.0.13",
-    "@mui/joy": "^5.0.0-beta.10",
+    "@fontsource/inter": "^5.0.16",
+    "@mui/joy": "5.0.0-beta.18",
     "@mui/material": "^5.15.0",
     "@sttm/banidb": "^3.0.0",
+    "Stack": "link:@mui/material/Stack",
     "gurmukhi-utils": "^3.2.2",
     "less": "^4.2.0",
-    "pnpm": "^8.9.2",
+    "pnpm": "^8.12.1",
     "pwa-asset-generator": "^6.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.16.0",
-    "Stack": "@mui/material/Stack"
+    "react-router-dom": "^6.20.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.32.2",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "vite": "^4.4.5",
-    "vite-plugin-pwa": "^0.16.5",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "vite": "^4.5.1",
+    "vite-plugin-pwa": "^0.16.7",
     "workbox-window": "^7.0.0"
   }
 }
