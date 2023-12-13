@@ -22,7 +22,7 @@ const Todo = ({navigate}: Props) => {
             value={todo}
             onChange={handleChange}>
             <MenuItem disabled value=" ">
-            ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖਾਲਸਾ, ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫਤਿਹ
+            ਵਾਹਿਗੁਰੂਜੀਕਾਖਾਲਸਾਵਾਹਿਗੁਰੂਜੀਕੀਫਤਿਹਜੀ।।
             </MenuItem>
             {
               Object.entries(uniqueTodo).map(([path, heading]) => 
