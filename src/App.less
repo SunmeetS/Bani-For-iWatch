@@ -2,6 +2,9 @@
 
 * {
     font-weight: 400;
+    // -webkit-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
 }
 
 .shabad-main {
@@ -239,6 +242,30 @@ h1, h2, h3, h4, h5, h6, p, span {
         width: 100%;
         object-fit: cover;
     }
+}
+
+.jaapCounter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    h1 {
+        font-size: 10rem
+    }
+    .buttonGroup {
+        display: flex;
+        justify-content: center;
+    }
+    button {
+        border: 2px solid var(--mainFontColor);
+        border-radius: @padding-lg;
+        padding: @padding-md;
+        font-size: 2rem;
+        background-color: transparent;
+        color: var(--mainFontColor)
+    };
+
 }
 
 .buttonGroup, .buttonGroupNoMarginTop {

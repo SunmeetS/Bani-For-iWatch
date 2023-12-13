@@ -114,6 +114,7 @@ export const todoMap = {
   '/find-a-shabad': 'Search a Shabad',
   '/beant-baaniyan': 'Read a Bani',
   '/live-audio': 'Live Kirtan From Itihaasik Gurudwaras',
+  '/jaap-counter': 'Jaap'
 };
 
 export function utils() {

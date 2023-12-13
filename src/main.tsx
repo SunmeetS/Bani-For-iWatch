@@ -16,6 +16,7 @@ import LiveAudio from "./LiveAudio";
 import Shabads from "./Shabads";
 import { toUnicode } from "gurmukhi-utils";
 import Todo from "./Todo";
+import JaapCounter from "./JaapCounter";
 
 export const BaniContext = createContext({});
 
@@ -92,6 +93,10 @@ function Main() {
     {
       path: 'find-a-shabad',
       element: <Shabads/>
+    },
+    {
+      path: '/jaap-counter',
+      element: <JaapCounter />
     }
   ]);
 
