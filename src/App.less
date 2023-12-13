@@ -251,19 +251,27 @@ h1, h2, h3, h4, h5, h6, p, span {
     flex-direction: column;
     cursor: pointer;
     h1 {
-        font-size: 10rem
+        font-size: 20vh;
+        @media @mobile {
+            font-size: 30vw
+        }
+        line-break: strict;
     }
     .buttonGroup {
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
     }
     button {
         border: 2px solid var(--mainFontColor);
         border-radius: @padding-lg;
         padding: @padding-md;
-        font-size: 2rem;
         background-color: transparent;
-        color: var(--mainFontColor)
+        color: var(--mainFontColor);
+        font-size: 10vh;
+        @media @mobile {
+            font-size: 10vw
+        }
     };
 
 }
