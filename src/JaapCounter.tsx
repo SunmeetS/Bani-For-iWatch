@@ -7,7 +7,7 @@ type Props = {}
 
 const JaapCounter = (props: Props) => {
     const [count, setCount] = useState(0);
-    const [milestone, setMilestone] = useState(10)
+    const [milestone, setMilestone] = useState(108)
     const [modalType, setModalType] = React.useState(false);
     useEffect(() => {
         if(!count) setCount(0)
