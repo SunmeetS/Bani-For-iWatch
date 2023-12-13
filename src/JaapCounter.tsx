@@ -12,7 +12,8 @@ const JaapCounter = (props: Props) => {
     useEffect(() => {
         if(!count) setCount(0)
         if(count === milestone || count % milestone === 0) {
-        navigator.vibrate(200)
+        const canVibrate = window.navigator.vibrate
+        if (canVibrate) window.navigator.vibrate(100)
 }    }, [count])
 
     return (
