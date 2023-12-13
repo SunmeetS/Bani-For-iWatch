@@ -15,6 +15,7 @@ import { Button, ButtonGroup, Checkbox, CircularProgress, Input, Link, Switch, T
 import LiveAudio from "./LiveAudio";
 import Shabads from "./Shabads";
 import { toUnicode } from "gurmukhi-utils";
+import Todo from "./Todo";
 
 export const BaniContext = createContext({});
 
@@ -160,7 +161,7 @@ function Main() {
         );
       }} label='Presenter Mode' />
     </div>,
-    
+    <Todo/>
   ]
 
   const root = document.querySelector(':root') as HTMLElement;

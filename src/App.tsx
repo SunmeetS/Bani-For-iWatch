@@ -3,6 +3,7 @@ import './App.less'
 import * as React from 'react';
 import { baniCache } from './utils';
 import Todo from './Todo';
+import { useNavigate } from 'react-router-dom';
 
 export const isMobile = window.innerWidth <= 425
 
@@ -39,11 +40,11 @@ export function getFromLS(key) {
 
 function App() {
   const appRef = React.useRef()
-
+  const navigate = useNavigate()
   return (
       <div ref={appRef} className="App">
         <div className="homeScreen">
-          <Todo/>
+          <Todo navigate={navigate}/>
         </div>
       </div>
   )
