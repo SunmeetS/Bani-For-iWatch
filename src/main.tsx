@@ -54,6 +54,7 @@ function Main() {
   const [larivaarAssist, setLarivaarAssist] = useState({ state: false, lineIndex: 0, expand: false });
   const [heading, setHeading] = useState('')
   const [scrollPosition, setScrollPosition] = useState({ prev: 0, current: 0 });
+  const [containerRef, setContainerRef] = useState<React.MutableRefObject<any>>()
 
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
@@ -220,7 +221,7 @@ function Main() {
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
       , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, 
-      statusText, setStatusText, isWrap, setIsWrap
+      statusText, setStatusText, isWrap, setIsWrap, setContainerRef
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
           <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
@@ -228,7 +229,17 @@ function Main() {
               <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
             </svg>
 
-            {(isMobile || !expandCustomisations) && <h1 style={{ fontWeight: 'bold' }}>{heading}</h1>} 
+            {(isMobile || !expandCustomisations) && (
+              <>
+                <h1 style={{ fontWeight: 'bold' }}>{heading}</h1>
+                {
+                  baniID && <button className="navigation" onClick={() => {(containerRef?.current as HTMLElement).scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                  })}}>🔝</button>
+                }
+              </>
+            )} 
 
             { expandCustomisations && <>
               <Button style={{ display: installationPrompt ? 'block' : 'none' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>

@@ -4,6 +4,6 @@
             "vite-plugin-pwa/client"
           ],
           "jsx": "react",
-          "lib": ["es2015", "dom"]
+          "lib": ["es2019", "dom"]
     }
 }

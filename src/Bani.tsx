@@ -15,10 +15,14 @@ const Bani = ({ baniId, shabadId }) => {
   const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setError, 
   showPunjabiMeaning, presenterMode, search, throttledScroll,  
   scrolling,larivaarAssist, setLarivaarAssist, setShabadID, 
-  statusText, setStatusText, setHeading, isWrap } = useContext(BaniContext) ?? {}
+  statusText, setStatusText, setHeading, isWrap, setContainerRef } = useContext(BaniContext) ?? {}
   const {fetchBani, fetchShabad} = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    setContainerRef(containerRef)
+  }, [])
 
   useEffect(() => {
     if(!baniId && !shabadId){
@@ -32,7 +36,6 @@ const Bani = ({ baniId, shabadId }) => {
         setShabadID(shabadId);
       }
     }
-    setHeading('Beant Baaniyan')
     setStatusText(<CircularProgress style={{margin: '1rem'}} />)
     return () => {
       setBaniID(null);
@@ -102,7 +105,7 @@ const Bani = ({ baniId, shabadId }) => {
 
   useEffect(() => {
     handleSearch()
-  }, [baniData])
+  }, [baniData, search])
 
   useEffect(() => {
     scrollToFoundShabad()

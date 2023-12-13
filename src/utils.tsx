@@ -108,6 +108,12 @@ export function getFirstLetters(text) {
 }
 
 export const baniCache = {bani: {}, shabad: {}};
+
+export const todoMap = {
+  'Search a Shabad': '/find-a-shabad',
+  'Read a Bani': '/beant-baaniyan',
+  'Live Kirtan': '/live-audio',
+};
     export function utils() {
       async function fetchBanis() {
         return await fetcher(API_URL + '/banis');
