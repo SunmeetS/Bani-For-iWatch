@@ -120,6 +120,7 @@ function Main() {
         handleInputChange(e);
       }} />
     </div>,
+    <Todo/>,
     <div key='displayMode' className='customisation'>
       <Typography className='switch'>Dark</Typography>
       <Switch className='switch' checked={mode === 'light'} onClick={(e) => setMode(e.target.checked ? 'light' : 'dark')} />
@@ -166,7 +167,6 @@ function Main() {
         );
       }} label='Presenter Mode' />
     </div>,
-    <Todo/>
   ]
 
   const root = document.querySelector(':root') as HTMLElement;
