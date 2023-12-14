@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import './App.less'
-import { Box, Button, Input, Modal, Typography } from '@mui/material';
 import InputGroup from './InputGroup';
+import { getFromLS, saveToLS } from './App';
 
 type Props = {}
 
 const JaapCounter = (props: Props) => {
-    const [count, setCount] = useState(0);
-    const [milestone, setMilestone] = useState(108)
+    const [count, setCount] = useState(getFromLS('count'));
+    const [milestone, setMilestone] = useState(getFromLS('milestone') ?? 108)
     const [modalType, setModalType] = React.useState(false);
     useEffect(() => {
+        saveToLS('count', count)
         if(!count) setCount(0)
         if(count === milestone || count % milestone === 0) {
         const canVibrate = window.navigator.vibrate
         if (canVibrate) window.navigator.vibrate(200)
-        }    
+        }
     }, [count])
+
+    useEffect(() => {
+        saveToLS('milestone', milestone)
+    }, [milestone])
 
     return (
     <div className='App'>
@@ -28,7 +33,7 @@ const JaapCounter = (props: Props) => {
                 <button onClick={() => setModalType('milestone')}>Set Milestone</button>
             </div>
             {modalType === 'resetCount' && <InputGroup 
-                ButtonText={'Set Reset Count'}
+                ButtonText={'Reset Count'}
                 close={setModalType}
                 modalType={modalType}
                 onSubmit={() => {}}

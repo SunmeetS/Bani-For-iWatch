@@ -22,17 +22,27 @@ const InputGroup = ({
         <Modal
             onClose={close}
             open
+            className='modal'
             >
             <Box sx={style}>
-                <Input type='number' onInput={(e) => setVal((e.target as HTMLInputElement).value)} placeholder={placeholder}/>
-                <Button onClick={() => {
-                    onSubmit();
-                    if(modalType === 'milestone') setMilestone(val);
-                    if(modalType === 'resetCount') {
-                        setCount(parseInt(val))
+                <Input className='modalInput' type='number' onInput={(e) => setVal((e.target as HTMLInputElement).value)} placeholder={placeholder}/>
+                <div className='modalButtonGroup'>
+                    {
+                        modalType === 'resetCount' && 
+                        <Button onClick={() => {
+                            setCount(0);
+                            close()
+                        }}>Reset to 0</Button>
                     }
-                    close()
-                }}>{ButtonText}</Button>
+                    <Button onClick={() => {
+                        onSubmit();
+                        if(modalType === 'milestone') setMilestone(val);
+                        if(modalType === 'resetCount') {
+                            setCount(parseInt(val))
+                        }
+                        close()
+                    }}>{ButtonText}</Button>
+                </div>
             </Box>
         </Modal>
     </div>

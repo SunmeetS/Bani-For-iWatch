@@ -244,6 +244,28 @@ h1, h2, h3, h4, h5, h6, p, span {
     }
 }
 
+.modal {
+    display: flex;
+    align-items: center;
+    .modalInput {
+        width: 100%;
+        border: none;
+    }
+    .modalButtonGroup {
+        display: flex;
+        justify-content: space-around;
+        button {
+            margin: @padding-sm;
+            border: 2px solid green;
+            font-weight: 600;
+            border-radius: @padding-sm;
+            color: green;
+            font-size: 0.8;
+        }
+        
+    }
+}
+
 .jaapCounter {
     display: flex;
     justify-content: space-between;
