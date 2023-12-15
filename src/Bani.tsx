@@ -15,7 +15,7 @@ const Bani = ({ baniId, shabadId }) => {
   const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setError, 
   showPunjabiMeaning, presenterMode, search, throttledScroll,  
   scrolling,larivaarAssist, setLarivaarAssist, setShabadID, 
-  statusText, setStatusText, setHeading, isWrap, setContainerRef } = useContext(BaniContext) ?? {}
+  statusText, setStatusText, setHeading, isWrap, setContainerRef, shabadTuk, setShabadTuk } = useContext(BaniContext) ?? {}
   const {fetchBani, fetchShabad} = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
@@ -42,6 +42,7 @@ const Bani = ({ baniId, shabadId }) => {
       setShabadID(null);
       setStatusText(null);
       setHeading('')
+      setShabadTuk(null)
     }
   }, [])
 
@@ -85,7 +86,7 @@ const Bani = ({ baniId, shabadId }) => {
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
-        saveToLS('current', {shabadId});
+        saveToLS('current', {shabadId, shabadTuk});
         const fetchPromises = [];
 
         for (let i = 0; i < 10; i++) {
@@ -101,7 +102,7 @@ const Bani = ({ baniId, shabadId }) => {
     
     containerRef?.current?.focus();
     containerRef?.current?.addEventListener('scroll', throttledScroll)
-  }, [shabadId, baniId])
+  }, [shabadId, baniId, shabadTuk])
 
   useEffect(() => {
     handleSearch()
@@ -129,10 +130,12 @@ const Bani = ({ baniId, shabadId }) => {
   const handleSearch = (bani = null) => {
     if(bani) baniData = bani;
     for (let i = 0; i < baniData.details.length; i++) {
-      const tuk = removeMatras(baniData?.details?.[i]?.tuk);
-      const tukFirstLetters: string = getFirstLetters(tuk).join('');
-      const firstLettersSearch: string = removeMatras(search).split(' ').join('')
-      if (tukFirstLetters?.includes(firstLettersSearch)) {
+      const tuk = baniData?.details?.[i]?.tuk;
+      const tukWithoutMatras = removeMatras(tuk);
+      const tukFirstLetters: string = (getFirstLetters(tukWithoutMatras).join(''));
+      const firstLettersSearch: string = removeMatras(search).split(' ').join('');
+      if (tukFirstLetters?.includes(firstLettersSearch) || tuk === shabadTuk ) {
+        if(shabadId) setShabadTuk(tuk);
         setFoundShabadIndex({previous: foundShabadIndex?.current, current: i});
         scrollToFoundShabad();
         break;

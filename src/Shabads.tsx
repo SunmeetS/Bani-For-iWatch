@@ -5,6 +5,7 @@ import './App.less'
 import { debounce, utils } from './utils'
 import { toEnglish, toUnicode } from 'gurmukhi-utils'
 import { useNavigate } from 'react-router-dom'
+import { getFromLS } from './App'
 
 type Props = {}
 
@@ -12,9 +13,12 @@ const Shabads = (props: Props) => {
 
     const [shabads, setShabads] = useState({ verses: [] });
     const [searchInput, setSearchInput] = useState('');
-    const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText, setStatusText, isEnglish } = useContext(BaniContext);
+    const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText, 
+        setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk
+    } = useContext(BaniContext);
     const { fetchShabads } = utils()
     const navigate = useNavigate()
+    const favourites = getFromLS('favourites')
 
     useEffect(() => {
         setHeading?.('Search Shabads')
@@ -38,8 +42,30 @@ const Shabads = (props: Props) => {
             if (shabads.verses.length === 0) setStatusText('No Shabads Found');
             else setStatusText(null)
             setShabads?.(shabads);
-        }).catch(() => setStatusText('Please Try Again'))
+        }).catch(() => setStatusText('Please Try Again'));
     }
+
+    if(showFavourites) return (
+        <div className="App">
+        <div className='shabad-main Banis'>
+            <h1 style={{textDecoration: 'underline', marginBottom: '1rem'}} className='gurmukhiMeanings'>Favourites</h1>
+                {
+                    favourites.map((shabad) => {
+                        return <h1 className='bani searchTuk' onClick={
+                            () => {
+                                setShabadID(shabad.shabadId);
+                                setBaniName(shabad.shabadTuk);
+                                setHeading?.(shabad.shabadTuk.split(' ').slice(0, 6).join(''));
+                                navigate('/bani');
+                            }
+                        }>
+                            {shabad.shabadTuk}
+                        </h1>
+                    })
+                }
+        </div>
+    </div> 
+    )
 
     return (
         <div className="App">
@@ -67,8 +93,9 @@ const Shabads = (props: Props) => {
                                         setShabadID(shabad.shabadId);
                                         setBaniName(baniName);
                                         setHeading(baniName)
+                                        setShabadTuk(tuk)
                                         navigate('/bani')
-                                    }} className='bani'>
+                                    }} className='bani searchTuk'>
                                         {isEnglish ? englishTuk : tuk}
                                     </h1>
                                 </>

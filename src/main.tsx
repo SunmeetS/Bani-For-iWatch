@@ -33,6 +33,7 @@ function Main() {
   const [mode, setMode] = useState('dark')
   const [statusText, setStatusText] = useState<any>();
   const [isWrap, setIsWrap] = useState(false);
+  const [shabadTuk, setShabadTuk] = useState();
 
   const [isLarivaar, setIsLarivaar] = useState(false)
   let [fontSize, setFontSize] = useState(34);
@@ -57,6 +58,7 @@ function Main() {
   const [heading, setHeading] = useState('')
   const [scrollPosition, setScrollPosition] = useState({ prev: 0, current: 0 });
   const [containerRef, setContainerRef] = useState<React.MutableRefObject<any>>()
+  const [showFavourites, setShowFavourites] = useState(false);
 
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
@@ -212,12 +214,23 @@ function Main() {
     }
   }, [presenterMode])
 
-  useEffect(() => {
-    if(!localStorage.getItem('cleared')) {
-      localStorage.clear();
-      localStorage.setItem('cleared', 'true')
+  const handleFavourites = () => {
+    if(location.pathname === '/bani'){
+      const currFavourites = getFromLS('favourites') ?? [];
+      const currentShabad = getFromLS('current');
+      const shabadAlreadyPresent = currFavourites.filter((curr) => curr.shabadId === currentShabad.shabadId).length;
+      if(!shabadAlreadyPresent) {
+        const newFavourites = [...currFavourites, currentShabad];
+        alert('Favourite Added')
+        saveToLS('favourites', newFavourites)
+      }
+      else{
+        alert('Shabad is already bookmarked!')
+      }
+      return;
     }
-  }, [])
+    setShowFavourites(!showFavourites);
+  }
 
   return (
     <BaniContext.Provider value={{
@@ -227,7 +240,8 @@ function Main() {
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
       , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, 
-      statusText, setStatusText, isWrap, setIsWrap, setContainerRef
+      statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites, 
+      shabadTuk, setShabadTuk
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
           <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
@@ -244,6 +258,7 @@ function Main() {
                     behavior: "smooth"
                   })}}>🔝</button>
                 }
+                {<h4 onClick={handleFavourites}>💙</h4>}
               </>
             )} 
 
