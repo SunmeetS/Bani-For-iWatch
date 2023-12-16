@@ -14,17 +14,20 @@ const Shabads = (props: Props) => {
     const [shabads, setShabads] = useState({ verses: [] });
     const [searchInput, setSearchInput] = useState('');
     const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText, 
-        setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk
+        setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk,
+        setFavLogo
     } = useContext(BaniContext);
     const { fetchShabads } = utils()
     const navigate = useNavigate()
     const favourites = getFromLS('favourites')
 
     useEffect(() => {
-        setHeading?.('Search Shabads')
+        setHeading?.('Search Shabads');
+        setFavLogo('💙')
         return (
             () => {
                 setStatusText(null)
+                setFavLogo()
             }
         )
     }, [])
@@ -50,7 +53,7 @@ const Shabads = (props: Props) => {
         <div className='shabad-main Banis'>
             <h1 style={{textDecoration: 'underline', marginBottom: '1rem'}} className='gurmukhiMeanings'>Favourites</h1>
                 {
-                    favourites.map((shabad) => {
+                    favourites?.map((shabad) => {
                         return <h1 className='bani searchTuk' onClick={
                             () => {
                                 setShabadID(shabad.shabadId);
@@ -63,8 +66,8 @@ const Shabads = (props: Props) => {
                         </h1>
                     })
                 }
-        </div>
-    </div> 
+            </div>
+        </div> 
     )
 
     return (

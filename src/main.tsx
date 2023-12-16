@@ -59,6 +59,7 @@ function Main() {
   const [scrollPosition, setScrollPosition] = useState({ prev: 0, current: 0 });
   const [containerRef, setContainerRef] = useState<React.MutableRefObject<any>>()
   const [showFavourites, setShowFavourites] = useState(false);
+  const [favLogo, setFavLogo] = useState();
 
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
@@ -241,7 +242,7 @@ function Main() {
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
       , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, 
       statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites, 
-      shabadTuk, setShabadTuk
+      shabadTuk, setShabadTuk, setFavLogo
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
           <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
@@ -258,7 +259,7 @@ function Main() {
                     behavior: "smooth"
                   })}}>🔝</button>
                 }
-                {<h4 onClick={handleFavourites}>💙</h4>}
+                {favLogo && <h4 onClick={handleFavourites}>{favLogo}</h4>}
               </>
             )} 
 
