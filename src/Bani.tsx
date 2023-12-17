@@ -16,7 +16,7 @@ const Bani = ({ baniId, shabadId }) => {
   showPunjabiMeaning, presenterMode, search, throttledScroll,  
   scrolling,larivaarAssist, setLarivaarAssist, setShabadID, 
   statusText, setStatusText, setHeading, isWrap, setContainerRef, shabadTuk, setShabadTuk, 
-  setFavLogo
+  setLogo
  } = useContext(BaniContext) ?? {}
   const {fetchBani, fetchShabad} = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
@@ -45,7 +45,7 @@ const Bani = ({ baniId, shabadId }) => {
       setStatusText(null);
       setHeading('')
       setShabadTuk(null)
-      setFavLogo();
+      setLogo();
     }
   }, [])
 
@@ -86,8 +86,8 @@ const Bani = ({ baniId, shabadId }) => {
     }
 
     if(shabadId) {
-      const currentHistory = getFromLS('history') ?? new Map();
-      if(!currentHistory[shabadId]) saveToLS('history', {...currentHistory, [shabadId]: shabadTuk})
+      const currentHistory = getFromLS('history') ?? [];
+      saveToLS('history', [...currentHistory, {shabadId, shabadTuk}]);
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
@@ -103,7 +103,7 @@ const Bani = ({ baniId, shabadId }) => {
       }).catch(() => {
         setStatusText('Failed to load Shabad data')
       });
-      setFavLogo('💙');
+      setLogo({favourites: '💙'});
     }
     
     containerRef?.current?.focus();

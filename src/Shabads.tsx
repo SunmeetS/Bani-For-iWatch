@@ -15,7 +15,7 @@ const Shabads = (props: Props) => {
     const [searchInput, setSearchInput] = useState('');
     const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText, 
         setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk,
-        setFavLogo
+        setLogo, showHistory
     } = useContext(BaniContext);
     const { fetchShabads } = utils()
     const navigate = useNavigate()
@@ -23,11 +23,11 @@ const Shabads = (props: Props) => {
 
     useEffect(() => {
         setHeading?.('Search Shabads');
-        setFavLogo('💙')
+        setLogo({history: 'HISTORY', favourites: '💙'})
         return (
             () => {
                 setStatusText(null)
-                setFavLogo()
+                setLogo()
             }
         )
     }, [])
@@ -48,17 +48,22 @@ const Shabads = (props: Props) => {
         }).catch(() => setStatusText('Please Try Again'));
     }
 
-    if(showFavourites) return (
+    let history = getFromLS('history') ?? [];
+
+    if(showFavourites || showHistory) return (
         <div className="App">
         <div className='shabad-main Banis'>
-            <h1 style={{textDecoration: 'underline', marginBottom: '1rem'}} className='gurmukhiMeanings'>Favourites</h1>
+            <h1 style={{textDecoration: 'underline', marginBottom: '1rem'}} className='gurmukhiMeanings'>{
+            showFavourites ? 'Favourites' : 'History'
+            }</h1>
                 {
-                    favourites?.map((shabad) => {
+                    (showFavourites ? favourites : history)?.map((shabad) => {
                         return <h1 className='bani searchTuk' onClick={
                             () => {
                                 setShabadID(shabad.shabadId);
                                 setBaniName(shabad.shabadTuk);
                                 setHeading?.(shabad.shabadTuk.split(' ').slice(0, 6).join(''));
+                                setShabadTuk(shabad.shabadTuk)
                                 navigate('/bani');
                             }
                         }>

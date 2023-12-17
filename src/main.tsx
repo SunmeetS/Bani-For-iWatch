@@ -59,7 +59,10 @@ function Main() {
   const [scrollPosition, setScrollPosition] = useState({ prev: 0, current: 0 });
   const [containerRef, setContainerRef] = useState<React.MutableRefObject<any>>()
   const [showFavourites, setShowFavourites] = useState(false);
-  const [favLogo, setFavLogo] = useState();
+  const [logo, setLogo] = useState({
+    favourites: '💙', history: 'HISTORY'
+  });
+  const [showHistory, setShowHistory] = useState(false);
 
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
@@ -226,11 +229,18 @@ function Main() {
         saveToLS('favourites', newFavourites)
       }
       else{
-        alert('Shabad is already bookmarked!')
+        alert('Shabad removed from Favourites.')
+        const newFavourites = [...currFavourites].filter((ele) => currentShabad.shabadId !== ele.shabadId);
+        saveToLS('favourites', newFavourites);
       }
       return;
     }
     setShowFavourites(!showFavourites);
+  }
+
+  if(!getFromLS('historyDeleted')) {
+    localStorage.removeItem('history');
+    saveToLS('historyDeleted', 'true');
   }
 
   return (
@@ -242,7 +252,7 @@ function Main() {
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
       , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, 
       statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites, 
-      shabadTuk, setShabadTuk, setFavLogo
+      shabadTuk, setShabadTuk, logo, setLogo, showHistory
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
           <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
@@ -259,7 +269,8 @@ function Main() {
                     behavior: "smooth"
                   })}}>🔝</button>
                 }
-                {favLogo && <h4 onClick={handleFavourites}>{favLogo}</h4>}
+                {logo && <h4 onClick={handleFavourites}>{logo.favourites}</h4>}
+                {logo && <h6 className={'historyLogo'} onClick={() => setShowHistory(!showHistory)}>{logo.history}</h6>}
               </>
             )} 
 
