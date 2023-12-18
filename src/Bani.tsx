@@ -152,6 +152,7 @@ const Bani = ({ baniId, shabadId }) => {
   let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}`
   const wrapTuk = [];
   baniData?.details?.forEach(({tuk}) => wrapTuk.push(...tuk.split(' ')))
+  const timeoutRef = useRef(null);
 
   return (
     <div className='App'>
@@ -176,16 +177,18 @@ const Bani = ({ baniId, shabadId }) => {
 
           idx === 0 ? className2 += 'title' : '';
           if(presenterMode) className2 = 'presenter'; 
-          
           return (
             <div
               className={className2}
-              
             >
-              <h4 onClick={() => {              
+              <h4 onClick={() => {  
+                            
                 if(isLarivaar) {
+                  if(timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
+                  }
                   setLarivaarAssist({...larivaarAssist, lineIndex: idx, expand: true});
-                  setTimeout(() => {
+                  timeoutRef.current = setTimeout(() => {
                     setLarivaarAssist({...larivaarAssist, lineIndex: null, expand: false})
                   }, 5000);
                 }
