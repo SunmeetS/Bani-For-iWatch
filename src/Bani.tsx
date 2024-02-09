@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getFirstLetters, removeMatras, utils } from './utils';
-import { BaniContext } from './main';
+import { BaniContext, SearchMethods } from './main';
 import { Button, CircularProgress } from '@mui/joy';
 import { getFromLS, saveToLS } from './App';
 
@@ -11,14 +11,14 @@ const Bani = ({ baniId, shabadId }) => {
     details: [],
     previous: '',
     next: '',
-});
-  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setError, 
-  showPunjabiMeaning, presenterMode, search, throttledScroll,  
-  scrolling,larivaarAssist, setLarivaarAssist, setShabadID, 
-  statusText, setStatusText, setHeading, isWrap, setContainerRef, shabadTuk, setShabadTuk, 
-  setLogo
- } = useContext(BaniContext) ?? {}
-  const {fetchBani, fetchShabad} = utils();
+  });
+  const { isLarivaar, fontSize, setBaniID, isEnglish, showEnglishMeaning, setError,
+    showPunjabiMeaning, presenterMode, search, throttledScroll,
+    scrolling, larivaarAssist, setLarivaarAssist, setShabadID,
+    statusText, setStatusText, setHeading, isWrap, setContainerRef, shabadTuk, setShabadTuk,
+    setLogo, searchMethod
+  } = useContext(BaniContext) ?? {}
+  const { fetchBani, fetchShabad } = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
 
@@ -27,7 +27,7 @@ const Bani = ({ baniId, shabadId }) => {
   }, [])
 
   useEffect(() => {
-    if(!baniId && !shabadId){
+    if (!baniId && !shabadId) {
       const { baniId, shabadId } = getFromLS('current');
 
       if (baniId) {
@@ -38,7 +38,7 @@ const Bani = ({ baniId, shabadId }) => {
         setShabadID(shabadId);
       }
     }
-    setStatusText(<CircularProgress style={{margin: '1rem'}} />)
+    setStatusText(<CircularProgress style={{ margin: '1rem' }} />)
     return () => {
       setBaniID(null);
       setShabadID(null);
@@ -75,23 +75,24 @@ const Bani = ({ baniId, shabadId }) => {
   }, [scrolling?.status, scrolling?.speed]);
 
   useEffect(() => {
-    if(baniId) {
+    if (baniId) {
       fetchBani(baniId).then(bani => {
         setBaniData(bani);
         setStatusText(null);
-        saveToLS('current', {baniId});
+        saveToLS('current', { baniId });
       }).catch(() => {
         setStatusText('Failed to load Bani data');
       })
     }
 
-    if(shabadId) {
+    if (shabadId) {
       const currentHistory = getFromLS('history') ?? [];
-      saveToLS('history', [...currentHistory, {shabadId, shabadTuk}]);
+      const shabadAlreadyPresent = currentHistory.filter((curr) => curr.shabadId === shabadId).length > 0;
+      if(!shabadAlreadyPresent) saveToLS('history', [{ shabadId, shabadTuk }, ...currentHistory]);
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
-        saveToLS('current', {shabadId, shabadTuk});
+        saveToLS('current', { shabadId, shabadTuk });
         const fetchPromises = [];
 
         for (let i = 0; i < 10; i++) {
@@ -99,13 +100,13 @@ const Bani = ({ baniId, shabadId }) => {
           fetchPromises.push(fetchShabad(shabadId + i));
         }
 
-        Promise.all(fetchPromises).then(() => {});
+        Promise.all(fetchPromises).then(() => { });
       }).catch(() => {
         setStatusText('Failed to load Shabad data')
       });
-      setLogo({favourites: '💙'});
+      setLogo({ favourites: '💙' });
     }
-    
+
     containerRef?.current?.focus();
     containerRef?.current?.addEventListener('scroll', throttledScroll)
   }, [shabadId, baniId, shabadTuk])
@@ -123,7 +124,7 @@ const Bani = ({ baniId, shabadId }) => {
       const shabadChildren: (HTMLElement | undefined)[] = containerRef.current.children
       const prevShabad = shabadChildren[foundShabadIndex?.previous]
       const shabadElement = shabadChildren[foundShabadIndex?.current];
-      if(prevShabad) {
+      if (prevShabad) {
         prevShabad.classList.remove('foundShabad')
       }
       shabadElement.classList.add('foundShabad')
@@ -134,24 +135,35 @@ const Bani = ({ baniId, shabadId }) => {
   };
 
   const handleSearch = (bani = null) => {
-    if(bani) baniData = bani;
+    if (bani) baniData = bani;
     for (let i = 0; i < baniData.details.length; i++) {
-      const tuk = baniData?.details?.[i]?.tuk;
+      let tuk = baniData?.details?.[i]?.tuk;
       const tukWithoutMatras = removeMatras(tuk);
       const tukFirstLetters: string = (getFirstLetters(tukWithoutMatras).join(''));
       const firstLettersSearch: string = removeMatras(search).split(' ').join('');
-      if (tukFirstLetters?.includes(firstLettersSearch) || tuk === shabadTuk ) {
-        if(shabadId) setShabadTuk(tuk);
-        setFoundShabadIndex({previous: foundShabadIndex?.current, current: i});
-        scrollToFoundShabad();
-        break;
+
+      if (searchMethod === SearchMethods.tuk) {
+        if (removeMatras(tuk).includes(removeMatras(search))) {
+          setFoundShabadIndex({ previous: foundShabadIndex?.current, current: i });
+          scrollToFoundShabad();
+          break;
+        }
       }
+
+      else{
+        if (tukFirstLetters?.includes(firstLettersSearch) || tuk === shabadTuk) {
+          if (shabadId) setShabadTuk(tuk);
+          setFoundShabadIndex({ previous: foundShabadIndex?.current, current: i });
+          scrollToFoundShabad();
+          break;
+        }
+    }
     }
   };
 
   let className = `tuk ${isEnglish ? '' : isLarivaar ? 'larivaar ' : ''}`
   const wrapTuk = [];
-  baniData?.details?.forEach(({tuk}) => wrapTuk.push(...tuk.split(' ')))
+  baniData?.details?.forEach(({ tuk }) => wrapTuk.push(...tuk.split(' ')))
   const timeoutRef = useRef(null);
 
   return (
@@ -161,54 +173,54 @@ const Bani = ({ baniId, shabadId }) => {
 
         {isWrap && wrapTuk.map((ele, index) => {
           return (
-            <span style={{fontSize: fontSize}} className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''}>
+            <span style={{ fontSize: fontSize }} className={(larivaarAssist.state && index % 2) ? 'larivaarAssist' : ''}>
               {ele + (!isLarivaar ? " " : '')}
             </span>
           )
         })}
-        
+
         {!isWrap && baniData?.details?.map((verse, idx) => {
 
-          let {tuk, englishTuk, englishMeaning, punjabiMeaning} = verse ?? {}
+          let { tuk, englishTuk, englishMeaning, punjabiMeaning } = verse ?? {}
 
           tuk = tuk?.split(' ');
 
           let className2 = className;
 
           idx === 0 ? className2 += 'title' : '';
-          if(presenterMode) className2 = 'presenter'; 
+          if (presenterMode) className2 = 'presenter';
           return (
             <div
               className={className2}
             >
-              <h4 onClick={() => {  
-                            
-                if(isLarivaar) {
-                  if(timeoutRef.current) {
+              <h4 onClick={() => {
+
+                if (isLarivaar) {
+                  if (timeoutRef.current) {
                     clearTimeout(timeoutRef.current);
                   }
-                  setLarivaarAssist({...larivaarAssist, lineIndex: idx, expand: true});
+                  setLarivaarAssist({ ...larivaarAssist, lineIndex: idx, expand: true });
                   timeoutRef.current = setTimeout(() => {
-                    setLarivaarAssist({...larivaarAssist, lineIndex: null, expand: false})
+                    setLarivaarAssist({ ...larivaarAssist, lineIndex: null, expand: false })
                   }, 5000);
                 }
               }}>
-                {isEnglish ? englishTuk: tuk?.map((ele: string, index: number) => 
-                {
+                {isEnglish ? englishTuk : tuk?.map((ele: string, index: number) => {
                   return (
                     <span className={(larivaarAssist.state && index % 2 && idx != 0) ? 'larivaarAssist' : ''} style={
                       {
-                        marginRight: (larivaarAssist.expand && larivaarAssist.lineIndex === idx) && '10px', 
+                        marginRight: (larivaarAssist.expand && larivaarAssist.lineIndex === idx) && '10px',
                         transition: 'margin 0.5s',
                         fontSize: fontSize
                       }
-                      }>{ele + (!isLarivaar ? " " : '')}</span>)}
-                  )
+                    }>{ele + (!isLarivaar ? " " : '')}</span>)
+                }
+                )
                 }
               </h4>
-             { (englishMeaning || punjabiMeaning) && <div className="meaningsGroup">
-                {showEnglishMeaning && <p style={{fontSize: fontSize/2}} className='englishMeanings'>{englishMeaning}</p>}
-                {showPunjabiMeaning && <p style={{fontSize: fontSize/1.5}} className='gurmukhiMeanings'>{punjabiMeaning}</p>}
+              {(englishMeaning || punjabiMeaning) && <div className="meaningsGroup">
+                {showEnglishMeaning && <p style={{ fontSize: fontSize / 2 }} className='englishMeanings'>{englishMeaning}</p>}
+                {showPunjabiMeaning && <p style={{ fontSize: fontSize / 1.5 }} className='gurmukhiMeanings'>{punjabiMeaning}</p>}
               </div>}
             </div>
           );

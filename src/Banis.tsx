@@ -4,11 +4,12 @@ import './App.less'
 import { BaniContext } from './main.jsx'
 import { useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/joy';
+import { getFromLS, saveToLS } from './App';
 
 const Banis = () => {
   const { banis, setBanis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setHeading, setBaniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
-  const {fetchBani, fetchBanis} = utils();
+  const { fetchBani, fetchBanis } = utils();
 
   const [loading, setLoading] = useState(false);
 
@@ -25,15 +26,21 @@ const Banis = () => {
   }, [search]);
 
   useEffect(() => {
+    let banis = getFromLS('banis');
+    if(banis) {
+      setBanis(banis);
+      return;
+    }
     setLoading(true);
     fetchBanis().then(banis => {
+      saveToLS('banis',banis);
       setBanis(banis)
     })
   }, [])
 
   useEffect(() => {
     Promise.all(banis?.map(async (bani) => {
-      if(!baniCache.bani[bani.ID]) {
+      if (!baniCache.bani[bani.ID]) {
         let res = fetchBani(bani.ID);
         baniCache.bani[bani.ID] = true;
         return res
@@ -41,40 +48,40 @@ const Banis = () => {
     })).then(() => {
       setLoading(false);
     })
-    .catch(() => {
-      console.log('error in pre-fetching the banis')
-      setLoading(false);
-    })
+      .catch(() => {
+        console.log('error in pre-fetching the banis')
+        setLoading(false);
+      })
   }, [banis])
 
   const navigate = useNavigate()
 
   const isMobile = window.innerWidth <= 425
   return (
-   <div className='App'>
-    <div key={'Banis'} className='Banis'>
-      {
-        loading ? <CircularProgress /> : 
-        (filteredBanis?.length ? filteredBanis : banis)?.map((bani) => {
-          let tuk = bani.gurmukhiUni, englishTuk = bani.transliteration;
-          if (isLarivaar) tuk = tuk.split(' ').join('');
-          return <div
-            onClick={() => {
-              setBaniID(bani.ID);
-              setBaniName(tuk)
-              setHeading(tuk)
-              navigate('/bani')
-            }}
-            style={{ fontSize: fontSize }}
-            key={bani.ID}
-            className='bani baniName'>
-            {isEnglish ? englishTuk : tuk}
-          </div>
+    <div className='App'>
+      <div key={'Banis'} className='Banis'>
+        {
+          loading ? <CircularProgress /> :
+            (filteredBanis?.length ? filteredBanis : banis)?.map((bani) => {
+              let tuk = bani.gurmukhiUni, englishTuk = bani.transliteration;
+              if (isLarivaar) tuk = tuk.split(' ').join('');
+              return <div
+                onClick={() => {
+                  setBaniID(bani.ID);
+                  setBaniName(tuk)
+                  setHeading(tuk)
+                  navigate('/bani')
+                }}
+                style={{ fontSize: fontSize }}
+                key={bani.ID}
+                className='bani baniName'>
+                {isEnglish ? englishTuk : tuk}
+              </div>
+            }
+            )
         }
-        )
-      }
+      </div>
     </div>
-   </div>
   )
 }
 

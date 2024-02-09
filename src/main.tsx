@@ -1,4 +1,4 @@
-import {useState, createContext, useEffect} from "react";
+import { useState, createContext, useEffect } from "react";
 import * as React from 'react';
 import { createRoot } from "react-dom/client";
 import {
@@ -17,12 +17,17 @@ import Shabads from "./Shabads";
 import { toUnicode } from "gurmukhi-utils";
 import Todo from "./Todo";
 import JaapCounter from "./JaapCounter";
+import { MenuItem, Select } from "@mui/material";
 
 export const BaniContext = createContext({});
+export enum SearchMethods {
+  tuk = 'Search By Tuk',
+  firstLetter = 'Search By First Letter'
+}
 
 function Main() {
   const updateSW = registerSW({
-    onOfflineReady() {},
+    onOfflineReady() { },
   })
 
   updateSW()
@@ -30,7 +35,7 @@ function Main() {
   const [expandCustomisations, setExpandCustomisations] = useState(false);
   const [shabadID, setShabadID] = useState()
   const [baniName, setBaniName] = useState('')
-  const [mode, setMode] = useState('dark')
+  const [mode, setMode] = useState(getFromLS('mode') ?? 'dark')
   const [statusText, setStatusText] = useState<any>();
   const [isWrap, setIsWrap] = useState(false);
   const [shabadTuk, setShabadTuk] = useState();
@@ -42,7 +47,6 @@ function Main() {
   const [error, setError] = useState(false);
   const [banis, setBanis] = useState([]);
 
-  const { fetchBani, fetchBanis } = utils()
   const [baniID, setBaniID] = useState()
 
   const showCustomisations = baniID || shabadID
@@ -60,8 +64,9 @@ function Main() {
   const [containerRef, setContainerRef] = useState<React.MutableRefObject<any>>()
   const [showFavourites, setShowFavourites] = useState(false);
   const [logo, setLogo] = useState({
-    favourites: '💙', history: 'HISTORY'
+    favourites: '💙'
   });
+  const [searchMethod, setSearchMethod] = useState(SearchMethods['firstLetter']);
   const [showHistory, setShowHistory] = useState(false);
 
   const throttledScroll = throttle((e) => {
@@ -86,19 +91,19 @@ function Main() {
     },
     {
       path: "/beant-baaniyan",
-      element: <Banis/>
+      element: <Banis />
     },
     {
       path: "/bani",
-      element: <Bani shabadId={shabadID} baniId={baniID}/>
+      element: <Bani shabadId={shabadID} baniId={baniID} />
     },
     {
       path: '/live-audio',
-      element: <LiveAudio/>
+      element: <LiveAudio />
     },
     {
       path: 'find-a-shabad',
-      element: <Shabads/>
+      element: <Shabads />
     },
     {
       path: '/jaap-counter',
@@ -119,17 +124,28 @@ function Main() {
     setSearch(gurmukhiText);
   };
 
+  const handleSearchMethod = (e) => {
+    setSearchMethod(e.target.innerText);
+  }
+
   const customisations = [
-    <div>
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       <Input placeholder="Search..." value={search} onChange={(e) => {
         setSearch(e.target.value.split(' ').join(''));
         handleInputChange(e);
       }} />
+      <Select value={SearchMethods[searchMethod]} onClick={(e) => handleSearchMethod(e)}>
+        {Object.keys(SearchMethods).map((searchMethod) => <MenuItem value={searchMethod}>{SearchMethods[searchMethod]}</MenuItem>)}
+      </Select>
     </div>,
-    <Todo/>,
+    <Todo />,
     <div key='displayMode' className='customisation'>
       <Typography className='switch'>Dark</Typography>
-      <Switch className='switch' checked={mode === 'light'} onClick={(e) => setMode(e.target.checked ? 'light' : 'dark')} />
+      <Switch className='switch' checked={mode === 'light'} onClick={(e) => {
+        const modeVal = (e.target as HTMLInputElement).checked ? 'light' : 'dark'
+        setMode(modeVal);
+        saveToLS('mode', modeVal)
+      }} />
       <Typography className='switch'>Light</Typography>
     </div>,
     <div key={'larivaar'} className='customisation'>
@@ -156,7 +172,7 @@ function Main() {
       <Checkbox checked={scrolling.status} className='checkbox' onChange={(e) => setScrolling({ ...scrolling, status: e.target.checked })} label='Auto Scroll' />
     </div>,
     <div style={{ display: showCustomisations ? 'flex' : 'none' }} key={'isWrap'} className='customisation'>
-      <Checkbox checked={isWrap} className='checkbox' onChange={(e) => setIsWrap(e.target.checked )} label='Wrap gurbani' />
+      <Checkbox checked={isWrap} className='checkbox' onChange={(e) => setIsWrap(e.target.checked)} label='Wrap gurbani' />
     </div>,
     <div style={{ display: scrolling.status ? 'flex' : 'none' }} key={'scrollSpeed'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Scroll Speed">
@@ -178,22 +194,22 @@ function Main() {
   const root = document.querySelector(':root') as HTMLElement;
 
   if (mode === 'dark') {
-    root.style.setProperty('--mainFontColor', '#90b4f9')
-    root.style.setProperty('--mainBackgroundColor', 'rgb(0 10 36)')
-    root.style.setProperty('--titleFontColor', '#e48b00');
-    root.style.setProperty('--gurmukhiMeaningsFontColor', '#e0e7ffd6')
-    root.style.setProperty('--englishMeaningsFontColor', 'lightcyan');
-    root.style.setProperty('--larivaarAssistFontColor', '#90b4f99e');
-    root.style.setProperty('--headerBackgroundColor', '#90b4f9');
-    root.style.setProperty('--headerFontColor', 'black');
+    root.style.setProperty('--mainFontColor', '#ffffffbd')
+    root.style.setProperty('--mainBackgroundColor', 'rgb(13 14 14)')
+    root.style.setProperty('--titleFontColor', '#ff8282f0');
+    root.style.setProperty('--gurmukhiMeaningsFontColor', '#ffa7facc')
+    root.style.setProperty('--englishMeaningsFontColor', '#ffc6c6');
+    root.style.setProperty('--larivaarAssistFontColor', '#f99090b5');
+    root.style.setProperty('--headerBackgroundColor', '#6a6a6a45');
+    root.style.setProperty('--headerFontColor', 'white');
   }
   if (mode === 'light') {
-    root.style.setProperty('--mainFontColor', '#1a00ba')
-    root.style.setProperty('--mainBackgroundColor', '#2300fb17')
-    root.style.setProperty('--titleFontColor', 'rgb(175 0 192 / 81%)');
-    root.style.setProperty('--gurmukhiMeaningsFontColor', '#8d2773d9')
-    root.style.setProperty('--englishMeaningsFontColor', '#056700');
-    root.style.setProperty('--larivaarAssistFontColor', '#0072ddd1');
+    root.style.setProperty('--mainFontColor', '#080808cc')
+    root.style.setProperty('--mainBackgroundColor', '#b6b6b699')
+    root.style.setProperty('--titleFontColor', 'rgb(153 77 0 / 81%)');
+    root.style.setProperty('--gurmukhiMeaningsFontColor', '#714b00d9')
+    root.style.setProperty('--englishMeaningsFontColor', '#5e3f00');
+    root.style.setProperty('--larivaarAssistFontColor', '#544300d4');
     root.style.setProperty('--headerBackgroundColor', '#070030c9');
     root.style.setProperty('--headerFontColor', 'white');
   }
@@ -219,16 +235,16 @@ function Main() {
   }, [presenterMode])
 
   const handleFavourites = () => {
-    if(location.pathname === '/bani'){
+    if (location.pathname === '/bani') {
       const currFavourites = getFromLS('favourites') ?? [];
       const currentShabad = getFromLS('current');
       const shabadAlreadyPresent = currFavourites.filter((curr) => curr.shabadId === currentShabad.shabadId).length;
-      if(!shabadAlreadyPresent) {
-        const newFavourites = [...currFavourites, currentShabad];
+      if (!shabadAlreadyPresent) {
+        const newFavourites = [currentShabad, ...currFavourites];
         alert('Favourite Added')
         saveToLS('favourites', newFavourites)
       }
-      else{
+      else {
         alert('Shabad removed from Favourites.')
         const newFavourites = [...currFavourites].filter((ele) => currentShabad.shabadId !== ele.shabadId);
         saveToLS('favourites', newFavourites);
@@ -238,7 +254,16 @@ function Main() {
     setShowFavourites(!showFavourites);
   }
 
-  if(!getFromLS('historyDeleted')) {
+  if (!getFromLS('favouritesReversed')) {
+    let fav = getFromLS('favourites'), hist = getFromLS('history');
+    hist = (hist as [])?.reverse();
+    fav = fav?.reverse();
+    saveToLS('favourites', fav);
+    saveToLS('history', hist);
+    saveToLS('favouritesReversed', true)
+  }
+
+  if (!getFromLS('historyDeleted')) {
     localStorage.removeItem('history');
     saveToLS('historyDeleted', 'true');
   }
@@ -250,42 +275,44 @@ function Main() {
       showEnglishMeaning, setShowEnglishMeaning, loading, setLoading,
       error, setError, showPunjabiMeaning, search, setSearch, presenterMode, setPresenterMode,
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
-      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName, 
-      statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites, 
-      shabadTuk, setShabadTuk, logo, setLogo, showHistory
+      , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName,
+      statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites,
+      shabadTuk, setShabadTuk, logo, setLogo, showHistory, searchMethod
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
-          <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
-            <svg onClick={() => setExpandCustomisations(!expandCustomisations)} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" style={{ width: '30px' }} viewBox="0 0 50 50">
-              <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
-            </svg>
+        <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
+          <svg onClick={() => setExpandCustomisations(!expandCustomisations)} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" style={{ width: '30px' }} viewBox="0 0 50 50">
+            <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
+          </svg>
 
-            {(isMobile || !expandCustomisations) && (
-              <>
-                <h1 style={{ fontWeight: 'bold' }}>{heading}</h1>
-                {
-                  baniID && <button className="navigation" onClick={() => {(containerRef?.current as HTMLElement).scrollTo({
+          {(isMobile || !expandCustomisations) && (
+            <>
+              <h1 style={{ fontWeight: 'bold' }}>{heading}</h1>
+              {
+                baniID && <button className="navigation" onClick={() => {
+                  (containerRef?.current as HTMLElement).scrollTo({
                     top: 0,
                     behavior: "smooth"
-                  })}}>🔝</button>
-                }
-                {logo && <h4 onClick={handleFavourites}>{logo.favourites}</h4>}
-                {logo && <h6 className={'historyLogo'} onClick={() => setShowHistory(!showHistory)}>{logo.history}</h6>}
-              </>
-            )} 
+                  })
+                }}>🔝</button>
+              }
+              {logo && <h4 onClick={handleFavourites}>{logo.favourites}</h4>}
+              {logo && <h6 className={'historyLogo'} onClick={() => setShowHistory(!showHistory)}>{logo.history}</h6>}
+            </>
+          )}
 
-            { expandCustomisations && <>
-              <Button style={{ display: installationPrompt ? 'block' : 'none' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
-                Install This App
-              </Button>
-            </>}
-          </div>
           {expandCustomisations && <>
-            {
-              customisations?.map((ele) => ele)
-            }
+            <Button style={{ display: installationPrompt ? 'block' : 'none' }} onClick={() => { deferredPrompt?.prompt(); setDeferredPrompt(null); showInstallationPrompt(false) }}>
+              Install This App
+            </Button>
           </>}
-        </div>  
+        </div>
+        {expandCustomisations && <>
+          {
+            customisations?.map((ele) => ele)
+          }
+        </>}
+      </div>
       <RouterProvider router={router} />
     </BaniContext.Provider>
   );

@@ -90,10 +90,19 @@ export const throttle = (func, limit) => {
   };
 };
 
-export function removeMatras(text) {
-  var matraPattern = /[\u0A3E-\u0A4B\u0A66-\u0A75]/g;
-  var textWithoutMatras = text.replace(matraPattern, '');
-  return textWithoutMatras as string;
+export function removeMatras(tuk) {
+  const gurmukhiMatras = {
+    'ਾ': 'ਾ',   // ਾ (Aunkar)
+    'ਿ': 'ਿ',   // ਿ (Bihari)
+    'ੀ': 'ੀ',   // ੀ (Tippi)
+    'ੁ': 'ੁ',   // ੁ (Addak)
+    'ੂ': 'ੂ',   // ੂ (Bihari)
+    'ੇ': 'ੇ',   // ੇ (Aunkar)
+    'ੈ': 'ੈ',   // ੈ (Dulainkar)
+    'ੋ': 'ੋ',   // ੋ (Lavan)
+    'ੌ': 'ੌ',   // ੌ (Dulainkar)
+  };
+  return tuk.split('').filter((ele) => !gurmukhiMatras[ele]).join('')
 }
 export function getFirstLetters(text) {
   const words = text.split(' ');

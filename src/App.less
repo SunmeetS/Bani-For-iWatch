@@ -86,9 +86,10 @@ h1, h2, h3, h4, h5, h6, p, span {
     border-bottom: 0.1px solid var(--mainFontColor);
     cursor: pointer;
     margin: 0 2vw;
+    color: var(--titleFontColor)
 }
 .foundShabad {
-    border: 3px dotted var(--headerBackgroundColor);
+    border: 3px dotted var(--mainFontColor);
     padding: @padding-sm;
     margin: @padding-xs !important;
     @media @mobile {
@@ -232,7 +233,7 @@ h1, h2, h3, h4, h5, h6, p, span {
     margin: @padding-sm !important;
     max-width: 400px;
     cursor: pointer;
-    background-color: var(--mainFontColor);
+    background-color: var(--titleFontColor);
     padding: 0.5rem 1rem !important;
     border-radius: @padding-md;
     outline: none;
@@ -308,7 +309,7 @@ h1, h2, h3, h4, h5, h6, p, span {
         border-radius: @padding-lg;
         padding: @padding-sm;
         background-color: transparent;
-        color: var(--mainFontColor);
+        color: var(--titleFontColor);
         font-size: 1.5rem;
     };
     button:active {
@@ -368,10 +369,11 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .todoSelect {
     color: black !important;
+    background-color: var(--titleFontColor);
     margin: @padding-md 0 !important;
 }
 
-.bani, .tuk, .todoSelect {
+.tuk, .todoSelect {
     font-size: x-large;
     margin: 0 2vw;
     color: var(--mainFontColor);
