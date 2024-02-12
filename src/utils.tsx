@@ -139,7 +139,7 @@ export function utils() {
   }
 
   const fetchMultipleShabads = (shabadData, message) => {
-    Promise.all(shabadData.map(async ({ shabadId = 1 }) => {
+    Promise.all(shabadData?.map(async ({ shabadId = 1 }) => {
       await fetchShabad(shabadId)
     }))
       .then(async () => {
