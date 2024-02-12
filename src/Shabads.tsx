@@ -13,17 +13,17 @@ const Shabads = (props: Props) => {
 
     const [shabads, setShabads] = useState({ verses: [] });
     const [searchInput, setSearchInput] = useState('');
-    const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText, 
+    const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText,
         setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk,
         setLogo, showHistory
     } = useContext(BaniContext);
-    const { fetchShabads } = utils()
+    const { fetchShabads, fetchMultipleShabads } = utils()
     const navigate = useNavigate()
     const favourites = getFromLS('favourites')
 
     useEffect(() => {
         setHeading?.('Search Shabads');
-        setLogo({history: 'HISTORY', favourites: '💙'})
+        setLogo({ history: 'HISTORY', favourites: '💙' })
         return (
             () => {
                 setStatusText(null)
@@ -39,26 +39,29 @@ const Shabads = (props: Props) => {
     useEffect(() => { setShabadID }, [shabadID])
 
     const updateShabads = () => {
-        if(search.length < 3) return;
+        if (search.length < 3) return;
         setStatusText?.(<CircularProgress style={{ margin: '1rem' }} />)
         fetchShabads(search).then((shabads) => {
             if (shabads.verses.length === 0) setStatusText('No Shabads Found');
             else setStatusText(null)
             setShabads?.(shabads);
+
+            fetchMultipleShabads(shabads.verses, 'Search Shabads Fetched Succesfully')
+
         }).catch(() => setStatusText('Please Try Again'));
     }
 
     let history = getFromLS('history') ?? [];
 
-    if(showFavourites || showHistory) return (
+    if (showFavourites || showHistory) return (
         <div className="App">
-        <div className='shabad-main Banis'>
-            <h1 style={{textDecoration: 'underline', marginBottom: '1rem'}} className='gurmukhiMeanings'>{
-            showFavourites ? 'Favourites' : 'History'
-            }</h1>
+            <div className='shabad-main Banis'>
+                <h1 style={{ textDecoration: 'underline', marginBottom: '1rem' }} className='gurmukhiMeanings'>{
+                    showFavourites ? 'Favourites' : 'History'
+                }</h1>
                 {
-                    (showFavourites ? favourites : history)?.map((shabad) => {
-                        return <h1 className='bani searchTuk' onClick={
+                    (showFavourites ? favourites : history)?.map((shabad, index) => {
+                        return shabad.shabadTuk && <h1 className='bani searchTuk favourites' onClick={
                             () => {
                                 setShabadID(shabad.shabadId);
                                 setBaniName(shabad.shabadTuk);
@@ -67,12 +70,12 @@ const Shabads = (props: Props) => {
                                 navigate('/bani');
                             }
                         }>
-                            {shabad.shabadTuk}
+                            {`${index + 1} - ${shabad.shabadTuk}`}
                         </h1>
                     })
                 }
             </div>
-        </div> 
+        </div>
     )
 
     return (

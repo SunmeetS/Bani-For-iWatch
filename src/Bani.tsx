@@ -51,23 +51,23 @@ const Bani = ({ baniId, shabadId }) => {
 
   useEffect(() => {
     let interval;
-  
+
     if (scrolling?.status) {
       if (!interval) {
         interval = setInterval(() => {
           containerRef?.current.scrollBy({
             top: scrolling?.speed,
             behavior: 'smooth'
-          });      
+          });
         }, 50);
       }
     } else {
       if (interval) {
         clearInterval(interval);
-        interval = null; 
+        interval = null;
       }
     }
-      return () => {
+    return () => {
       if (interval) {
         clearInterval(interval);
       }
@@ -88,10 +88,11 @@ const Bani = ({ baniId, shabadId }) => {
     if (shabadId) {
       const currentHistory = getFromLS('history') ?? [];
       const shabadAlreadyPresent = currentHistory.filter((curr) => curr.shabadId === shabadId).length > 0;
-      if(!shabadAlreadyPresent) saveToLS('history', [{ shabadId, shabadTuk }, ...currentHistory]);
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
+        const shabadTuk = data.details[2].tuk;
+        if (!shabadAlreadyPresent) saveToLS('history', [{ shabadId, shabadTuk }, ...currentHistory]);
         saveToLS('current', { shabadId, shabadTuk });
         const fetchPromises = [];
 
@@ -150,14 +151,14 @@ const Bani = ({ baniId, shabadId }) => {
         }
       }
 
-      else{
+      else {
         if (tukFirstLetters?.includes(firstLettersSearch) || tuk === shabadTuk) {
           if (shabadId) setShabadTuk(tuk);
           setFoundShabadIndex({ previous: foundShabadIndex?.current, current: i });
           scrollToFoundShabad();
           break;
         }
-    }
+      }
     }
   };
 

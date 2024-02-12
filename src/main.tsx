@@ -81,7 +81,6 @@ function Main() {
     const { prev, current } = scrollPosition
     if (current < 20) return '1';
     if (scrolling.status || current < prev) return '0.9';
-    if (current > prev) return '0';
   }
 
   const router = createBrowserRouter([
@@ -202,6 +201,8 @@ function Main() {
     root.style.setProperty('--larivaarAssistFontColor', '#f99090b5');
     root.style.setProperty('--headerBackgroundColor', '#6a6a6a45');
     root.style.setProperty('--headerFontColor', 'white');
+    root.style.setProperty('--alternateBackground', '#424040');
+    root.style.setProperty('--alternateFontColor', 'wheat');
   }
   if (mode === 'light') {
     root.style.setProperty('--mainFontColor', '#080808cc')
@@ -212,10 +213,14 @@ function Main() {
     root.style.setProperty('--larivaarAssistFontColor', '#544300d4');
     root.style.setProperty('--headerBackgroundColor', '#070030c9');
     root.style.setProperty('--headerFontColor', 'white');
+    root.style.setProperty('--alternateBackground', '#424040');
+    root.style.setProperty('--alternateFontColor', 'wheat');
   }
 
+  const header = document.querySelector('.customisations') as HTMLElement;
+  root.addEventListener('click', () => header.style.opacity = header.style.opacity !== '0' ? '0' : '0.9')
+
   useEffect(() => {
-    const header = document.querySelector('.customisations') as HTMLElement;
 
     if (header) {
       header.style.opacity = setOpacity()
@@ -252,6 +257,7 @@ function Main() {
       return;
     }
     setShowFavourites(!showFavourites);
+    setShowHistory(false);
   }
 
   if (!getFromLS('favouritesReversed')) {
@@ -267,6 +273,14 @@ function Main() {
     localStorage.removeItem('history');
     saveToLS('historyDeleted', 'true');
   }
+
+  const { fetchShabad, fetchMultipleShabads } = utils()
+
+  useEffect(() => {
+    const favourites = getFromLS('favourites');
+
+    fetchMultipleShabads(favourites, 'All Favourites Fetched');
+  }, [])
 
   return (
     <BaniContext.Provider value={{
@@ -297,7 +311,7 @@ function Main() {
                 }}>🔝</button>
               }
               {logo && <h4 onClick={handleFavourites}>{logo.favourites}</h4>}
-              {logo && <h6 className={'historyLogo'} onClick={() => setShowHistory(!showHistory)}>{logo.history}</h6>}
+              {logo && <h6 className={'historyLogo'} onClick={() => { setShowHistory(!showHistory); setShowFavourites(false) }}>{logo.history}</h6>}
             </>
           )}
 
