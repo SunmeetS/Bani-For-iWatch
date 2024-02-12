@@ -133,11 +133,7 @@ function Main() {
         setSearch(e.target.value.split(' ').join(''));
         handleInputChange(e);
       }} />
-      <Select value={SearchMethods[searchMethod]} onClick={(e) => handleSearchMethod(e)}>
-        {Object.keys(SearchMethods).map((searchMethod) => <MenuItem value={searchMethod}>{SearchMethods[searchMethod]}</MenuItem>)}
-      </Select>
     </div>,
-    <Todo />,
     <div key='displayMode' className='customisation'>
       <Typography className='switch'>Dark</Typography>
       <Switch className='switch' checked={mode === 'light'} onClick={(e) => {
@@ -218,7 +214,6 @@ function Main() {
   }
 
   const header = document.querySelector('.customisations') as HTMLElement;
-  root.addEventListener('click', () => header.style.opacity = header.style.opacity !== '0' ? '0' : '0.9')
 
   useEffect(() => {
 
