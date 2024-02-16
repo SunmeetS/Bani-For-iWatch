@@ -159,9 +159,9 @@ export function utils() {
       const englishMeaning = bdb ?? ms ?? ssk;
       const { bdb: pu1, ms: pu2, ft, ss } = ele.translation.pu;
       const punjabiMeaning = pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
-
+      let vishraam = ele?.visraam['igurbani'] || ele?.visraam['sttm'] || ele?.visraam['sttm2']
       return {
-        tuk, englishTuk, englishMeaning, punjabiMeaning
+        tuk, englishTuk, englishMeaning, punjabiMeaning, vishraam
       }
 
     })
@@ -182,13 +182,13 @@ export function utils() {
       const englishMeaning = bdb ?? ms ?? ssk;
       const { bdb: pu1, ms: pu2, ft, ss } = ele.translation.pu;
       const punjabiMeaning = pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
-
+      let vishraam = ele?.visraam['igurbani'] || ele?.visraam['sttm'] || ele?.visraam['sttm2'];
+      
       return {
-        tuk, englishTuk, englishMeaning, punjabiMeaning
+        tuk, englishTuk, englishMeaning, punjabiMeaning, vishraam
       }
 
     })
-
     return { details: [...shabadDetails], previous, next }
   }
   return {

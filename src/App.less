@@ -86,7 +86,7 @@ h1, h2, h3, h4, h5, h6, p, span {
     border-bottom: 0.1px solid var(--mainFontColor);
     cursor: pointer;
     margin: 0 2vw;
-    color: var(--titleFontColor)
+    color: var(--titleFontColor);
 }
 .foundShabad {
     border: 3px dotted var(--mainFontColor);
@@ -102,6 +102,13 @@ h1, h2, h3, h4, h5, h6, p, span {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+.vishraamMajor {
+    text-shadow: 5px 5px 20px red;
+}
+.vishraamMinor {
+    text-shadow: 5px 5px 20px yellow;
 }
 
 .shabadNavigation {
@@ -186,7 +193,10 @@ h1, h2, h3, h4, h5, h6, p, span {
         }
     }
     svg {
-        fill: var(--mainFontColor)
+        background-color: var(--mainFontColor);
+        fill: var(--mainBackgroundColor);
+        padding: 0.3rem;
+        border-radius: 0.2rem;
     }
     background-color: var(--mainBackgroundColor);
 }

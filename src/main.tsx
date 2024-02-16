@@ -68,6 +68,7 @@ function Main() {
   });
   const [searchMethod, setSearchMethod] = useState(SearchMethods['firstLetter']);
   const [showHistory, setShowHistory] = useState(false);
+  const [vishraams, setVishraams] = useState(true);
 
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
@@ -146,6 +147,9 @@ function Main() {
     <div key={'larivaar'} className='customisation'>
       <Checkbox checked={isLarivaar} className='checkbox' onChange={(e) => setIsLarivaar(e.target.checked)} label='Larivaar' />
       {isLarivaar && <Checkbox style={{ marginLeft: '1rem' }} checked={larivaarAssist.state} className='checkbox' onChange={(e) => setLarivaarAssist({ ...larivaarAssist, state: e.target.checked })} label=' Larivaar Assist' />}
+    </div>,
+    <div key={'vishraams'} className='customisation'>
+      <Checkbox checked={vishraams} className='checkbox' onChange={(e) => setVishraams(e.target.checked)} label='Vishraams' />
     </div>,
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
@@ -277,6 +281,12 @@ function Main() {
     fetchMultipleShabads(favourites, 'All Favourites Fetched');
   }, [])
 
+  if (loading) return <div className="center App">
+    <div style={{ display: 'flex' }}>
+      <h2>Loading...</h2><CircularProgress style={{ margin: '0 1rem' }} />
+    </div>
+  </div>
+
   return (
     <BaniContext.Provider value={{
       banis, setBanis, setMode, isLarivaar, mode, setIsLarivaar, fontSize,
@@ -286,7 +296,7 @@ function Main() {
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
       , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName,
       statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites,
-      shabadTuk, setShabadTuk, logo, setLogo, showHistory, searchMethod
+      shabadTuk, setShabadTuk, logo, setLogo, showHistory, searchMethod, vishraams, setVishraams
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
         <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >
