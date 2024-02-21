@@ -138,9 +138,9 @@ export function utils() {
     return shabads
   }
 
-  const fetchMultipleShabads = (shabadData, message) => {
-    Promise.all(shabadData?.map(async ({ shabadId = 1 }) => {
-      await fetchShabad(shabadId)
+  const fetchMultiple = (data, message, type = 'shabads') => {
+    Promise.all(data?.map(async ({ shabadId = 1, baniId = 1 }) => {
+      await type === 'shabads' ? fetchShabad(shabadId) : fetchBani(baniId)
     }))
       .then(async () => {
         console.log(message)
@@ -192,6 +192,6 @@ export function utils() {
     return { details: [...shabadDetails], previous, next }
   }
   return {
-    fetchBani, fetchBanis, fetchShabad, fetchShabads, fetchMultipleShabads
+    fetchBani, fetchBanis, fetchShabad, fetchShabads, fetchMultiple
   }
 }

@@ -183,7 +183,7 @@ const Bani = ({ baniId, shabadId }) => {
         {!isWrap && baniData?.details?.map((verse, idx) => {
 
           let { tuk, englishTuk, englishMeaning, punjabiMeaning, vishraam } = verse ?? {}
-          const vishraamIndexMajor = vishraam?.[0]?.p, vishraamIndexMinor = vishraam?.[1]?.p; console.log(tuk, vishraamIndexMinor)
+          const vishraamIndexMajor = vishraam?.[0]?.p, vishraamIndexMinor = vishraam?.[1]?.p;
 
           tuk = tuk?.split(' ');
 

@@ -9,7 +9,7 @@ import { getFromLS, saveToLS } from './App';
 const Banis = () => {
   const { banis, setBanis, setBaniID, fontSize, isLarivaar, isEnglish, search, setSearch, expandCustomisations, setHeading, setBaniName } = useContext(BaniContext);
   const [filteredBanis, setFilteredBanis] = useState(banis as Bani[]);
-  const { fetchBani, fetchBanis } = utils();
+  const { fetchBanis, fetchMultiple } = utils();
 
   const [loading, setLoading] = useState(false);
 
@@ -27,32 +27,22 @@ const Banis = () => {
 
   useEffect(() => {
     let banis = getFromLS('banis');
-    if(banis) {
+    if (banis) {
       setBanis(banis);
+      fetchAllBanis()
       return;
     }
     setLoading(true);
     fetchBanis().then(banis => {
-      saveToLS('banis',banis);
+      saveToLS('banis', banis);
       setBanis(banis)
+      fetchAllBanis()
     })
-  }, [])
 
-  useEffect(() => {
-    Promise.all(banis?.map(async (bani) => {
-      if (!baniCache.bani[bani.ID]) {
-        let res = fetchBani(bani.ID);
-        baniCache.bani[bani.ID] = true;
-        return res
-      }
-    })).then(() => {
-      setLoading(false);
-    })
-      .catch(() => {
-        console.log('error in pre-fetching the banis')
-        setLoading(false);
-      })
-  }, [banis])
+    function fetchAllBanis() {
+      fetchMultiple(banis?.map(({ ID }) => { return { baniId: ID } }), 'Error in Pre-Fetching Banis', 'bani');
+    }
+  }, [])
 
   const navigate = useNavigate()
 

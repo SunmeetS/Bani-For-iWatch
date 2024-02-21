@@ -273,12 +273,15 @@ function Main() {
     saveToLS('historyDeleted', 'true');
   }
 
-  const { fetchShabad, fetchMultipleShabads } = utils()
+  const { fetchMultiple, fetchBanis } = utils()
 
   useEffect(() => {
     const favourites = getFromLS('favourites');
-
-    fetchMultipleShabads(favourites, 'All Favourites Fetched');
+    fetchBanis().then(banis => {
+      saveToLS('banis', banis);
+      setBanis(banis)
+    })
+    fetchMultiple(favourites, 'All Favourites Fetched');
   }, [])
 
   if (loading) return <div className="center App">

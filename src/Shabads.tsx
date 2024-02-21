@@ -17,7 +17,7 @@ const Shabads = (props: Props) => {
         setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk,
         setLogo, showHistory
     } = useContext(BaniContext);
-    const { fetchShabads, fetchMultipleShabads } = utils()
+    const { fetchShabads, fetchMultiple } = utils()
     const navigate = useNavigate()
     const favourites = getFromLS('favourites')
 
@@ -46,7 +46,7 @@ const Shabads = (props: Props) => {
             else setStatusText(null)
             setShabads?.(shabads);
 
-            fetchMultipleShabads(shabads.verses, 'Search Shabads Fetched Succesfully')
+            fetchMultiple(shabads.verses, 'Search Shabads Fetched Succesfully')
 
         }).catch(() => setStatusText('Please Try Again'));
     }
