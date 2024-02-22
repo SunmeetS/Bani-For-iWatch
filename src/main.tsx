@@ -154,7 +154,7 @@ function Main() {
     <div key={'fontSize'} className='customisation'>
       <ButtonGroup size='sm' aria-label="Font Size">
         <Button onClick={() => setFontSize(fontSize + 1)}>+</Button>
-        <Button >{fontSize}</Button>
+        <Input value={fontSize} className="input" onChange={({target: {value}}) => setFontSize(Number(value))} />
         <Button onClick={() => setFontSize(fontSize - 1)}>-</Button>
       </ButtonGroup>
     </div>,
