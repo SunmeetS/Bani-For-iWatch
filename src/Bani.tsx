@@ -3,6 +3,7 @@ import { getFirstLetters, removeMatras, utils } from './utils';
 import { BaniContext, SearchMethods } from './main';
 import { Button, CircularProgress } from '@mui/joy';
 import { getFromLS, saveToLS } from './App';
+import { AppContextType } from './Types/types';
 
 
 const Bani = ({ baniId, shabadId }) => {
@@ -17,7 +18,7 @@ const Bani = ({ baniId, shabadId }) => {
     scrolling, larivaarAssist, setLarivaarAssist, setShabadID,
     statusText, setStatusText, setHeading, isWrap, setContainerRef, shabadTuk, setShabadTuk,
     setLogo, searchMethod, setLoading, vishraams
-  } = useContext(BaniContext) ?? {}
+  } = useContext(BaniContext) as AppContextType ?? {}
   const { fetchBani, fetchShabad, fetchShabads } = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
   const containerRef = useRef(null);
@@ -87,11 +88,12 @@ const Bani = ({ baniId, shabadId }) => {
 
     if (shabadId) {
       const currentHistory = getFromLS('history') ?? [];
-      const shabadAlreadyPresent = currentHistory.filter((curr) => curr.shabadId === shabadId).length > 0;
+      const lastShabad = currentHistory.pop();
+      const shabadAlreadyPresent = lastShabad.shabadId === shabadId;
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
-        const shabadTuk = data.details[2].tuk;
+        const shabadTuk = data.details[0].tuk;
         if (!shabadAlreadyPresent) saveToLS('history', [{ shabadId, shabadTuk }, ...currentHistory]);
         saveToLS('current', { shabadId, shabadTuk });
         const fetchPromises = [];
