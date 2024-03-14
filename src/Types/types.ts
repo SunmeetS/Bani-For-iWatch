@@ -34,6 +34,7 @@ export interface AppContextType {
     setLarivaarAssist?: (value: boolean) => void;
     shabadID?: any;
     setShabadID?: (value: any) => void;
+    heading: string;
     setHeading?: (value: any) => void;
     baniName?: any;
     setBaniName?: (value: any) => void;

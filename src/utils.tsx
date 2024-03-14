@@ -1,4 +1,5 @@
-import App, { API_URL, fetcher } from './App';
+import { toUnicode } from "gurmukhi-utils";
+import { API_URL, fetcher } from "./App";
 
 export type Bani = {
   ID: number;
@@ -58,7 +59,7 @@ export const GurmukhiRaagList = [
   "ਰਾਮਕਲੀ",
   "ਰਾਮਕਲੀ ਦਖਣੀ",
   "ਨਟ ਨਾਰਾਇਨ",
-  "ਨਟ"
+  "ਨਟ",
 ];
 
 export const debounce = (func, delay) => {
@@ -89,23 +90,31 @@ export const throttle = (func, limit) => {
     }
   };
 };
-
+export type Info = {
+  Raag: string;
+  Writer: string;
+  Ang: number;
+  Source: string;
+};
 export function removeMatras(tuk) {
   const gurmukhiMatras = {
-    'ਾ': 'ਾ',   // ਾ (Aunkar)
-    'ਿ': 'ਿ',   // ਿ (Bihari)
-    'ੀ': 'ੀ',   // ੀ (Tippi)
-    'ੁ': 'ੁ',   // ੁ (Addak)
-    'ੂ': 'ੂ',   // ੂ (Bihari)
-    'ੇ': 'ੇ',   // ੇ (Aunkar)
-    'ੈ': 'ੈ',   // ੈ (Dulainkar)
-    'ੋ': 'ੋ',   // ੋ (Lavan)
-    'ੌ': 'ੌ',   // ੌ (Dulainkar)
+    "ਾ": "ਾ", // ਾ (Aunkar)
+    "ਿ": "ਿ", // ਿ (Bihari)
+    "ੀ": "ੀ", // ੀ (Tippi)
+    "ੁ": "ੁ", // ੁ (Addak)
+    "ੂ": "ੂ", // ੂ (Bihari)
+    "ੇ": "ੇ", // ੇ (Aunkar)
+    "ੈ": "ੈ", // ੈ (Dulainkar)
+    "ੋ": "ੋ", // ੋ (Lavan)
+    "ੌ": "ੌ", // ੌ (Dulainkar)
   };
-  return tuk.split('').filter((ele) => !gurmukhiMatras[ele]).join('')
+  return tuk
+    .split("")
+    .filter((ele) => !gurmukhiMatras[ele])
+    .join("");
 }
 export function getFirstLetters(text) {
-  const words = text.split(' ');
+  const words = text.split(" ");
   const firstLetters = [];
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
@@ -119,79 +128,114 @@ export function getFirstLetters(text) {
 export const baniCache = { bani: {}, shabad: {} };
 
 export const todoMap = {
-  '/': 'Home',
-  '/find-a-shabad': 'Search a Shabad',
-  '/beant-baaniyan': 'Read a Bani',
-  '/live-audio': 'Live Kirtan From Itihaasik Gurudwaras',
-  '/jaap-counter': 'Jaap'
+  "/": "Home",
+  "/find-a-shabad": "Search a Shabad",
+  "/beant-baaniyan": "Read a Bani",
+  "/live-audio": "Live Kirtan From Itihaasik Gurudwaras",
+  "/jaap-counter": "Jaap",
 };
 
 export function utils() {
   async function fetchBanis() {
-    return await fetcher(API_URL + '/banis');
+    return await fetcher(API_URL + "/banis");
   }
 
   const fetchShabads = async (searchInput: string) => {
     if (searchInput.length < 3) return;
-    const searchShabadsUrl = `${API_URL}search/${searchInput}?source=all&writer=all&page=`
-    const shabads = await fetcher(searchShabadsUrl)
-    return shabads
-  }
+    const searchShabadsUrl = `${API_URL}search/${searchInput}?source=all&writer=all&page=`;
+    const shabads = await fetcher(searchShabadsUrl);
+    return shabads;
+  };
 
-  const fetchMultiple = (data, message, type = 'shabads') => {
-    Promise.all(data?.map(async ({ shabadId = 1, baniId = 1 }) => {
-      await type === 'shabads' ? fetchShabad(shabadId) : fetchBani(baniId)
-    }))
+  const fetchMultiple = (data, message, type = "shabads") => {
+    Promise.all(
+      data?.map(async ({ shabadId = 1, baniId = 1 }) => {
+        (await type) === "shabads" ? fetchShabad(shabadId) : fetchBani(baniId);
+      })
+    )
       .then(async () => {
-        console.log(message)
-      }).catch(() => console.log('Error in ' + message))
-  }
+        console.log(message);
+      })
+      .catch(() => console.log("Error in " + message));
+  };
+
   const fetchBani = async (id: number) => {
-    const fetchBaniUrl = API_URL + 'banis/' + id;
+    const fetchBaniUrl = API_URL + "banis/" + id;
     const bani = await fetcher(fetchBaniUrl);
+    const Info: Info = {
+      Raag: bani?.baniInfo?.raag?.unicode,
+      Writer: toUnicode(bani?.baniInfo?.writer?.gurmukhi),
+      Ang: bani?.baniInfo?.source?.pageNo,
+      Source: bani?.baniInfo?.source?.unicode,
+    };
 
     const baniDetails = bani.verses.map((ele) => {
-
       ele = ele.verse;
       const tuk = ele.verse.unicode;
       const englishTuk = ele.transliteration.english;
       const { bdb, ms, ssk } = ele.translation.en;
       const englishMeaning = bdb ?? ms ?? ssk;
       const { bdb: pu1, ms: pu2, ft, ss } = ele.translation.pu;
-      const punjabiMeaning = pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
-      let vishraam = ele?.visraam['igurbani'] || ele?.visraam['sttm'] || ele?.visraam['sttm2']
+      const punjabiMeaning =
+        pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
+      let vishraam =
+        ele?.visraam["igurbani"] ||
+        ele?.visraam["sttm"] ||
+        ele?.visraam["sttm2"];
       return {
-        tuk, englishTuk, englishMeaning, punjabiMeaning, vishraam
-      }
+        tuk,
+        englishTuk,
+        englishMeaning,
+        punjabiMeaning,
+        vishraam,
+      };
+    });
 
-    })
+    return { details: [...baniDetails], previous: "", next: "", Info };
+  };
 
-    return { details: [...baniDetails], previous: '', next: '' };
-  }
-
-  const fetchShabad: (id: number) => Promise<{ details: any[]; previous: any; next: any; }> = async (id: number) => {
-    const fetchShabadUrl = API_URL + `shabads/${id}`
+  const fetchShabad: (
+    id: number
+  ) => Promise<{ details: any[]; previous: any; next: any }> = async (
+    id: number
+  ) => {
+    const fetchShabadUrl = API_URL + `shabads/${id}`;
 
     const shabad = await fetcher(fetchShabadUrl);
-    const { previous, next } = shabad.navigation
+    const { previous, next } = shabad.navigation;
+    const Info: Info = {
+      Raag: shabad.shabadInfo.raag.unicode,
+      Writer: toUnicode(shabad?.shabadInfo?.writer?.gurmukhi),
+      Ang: shabad?.shabadInfo?.pageNo,
+      Source: shabad?.shabadInfo?.source?.unicode,
+    };
     const shabadDetails = shabad.verses.map((ele) => {
-
       const tuk = ele.verse.unicode;
       const englishTuk = ele.transliteration.english;
       const { bdb, ms, ssk } = ele.translation.en;
       const englishMeaning = bdb ?? ms ?? ssk;
       const { bdb: pu1, ms: pu2, ft, ss } = ele.translation.pu;
-      const punjabiMeaning = pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
-      let vishraam = ele?.visraam['igurbani'] || ele?.visraam['sttm'] || ele?.visraam['sttm2'];
-      
+      const punjabiMeaning =
+        pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
+      let vishraam =
+        ele?.visraam["igurbani"] ||
+        ele?.visraam["sttm"] ||
+        ele?.visraam["sttm2"];
       return {
-        tuk, englishTuk, englishMeaning, punjabiMeaning, vishraam
-      }
-
-    })
-    return { details: [...shabadDetails], previous, next }
-  }
+        tuk,
+        englishTuk,
+        englishMeaning,
+        punjabiMeaning,
+        vishraam,
+      };
+    });
+    return { details: [...shabadDetails], previous, next, Info };
+  };
   return {
-    fetchBani, fetchBanis, fetchShabad, fetchShabads, fetchMultiple
-  }
+    fetchBani,
+    fetchBanis,
+    fetchShabad,
+    fetchShabads,
+    fetchMultiple,
+  };
 }
