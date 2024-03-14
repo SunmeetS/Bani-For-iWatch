@@ -17,7 +17,7 @@ const Bani = ({ baniId, shabadId }) => {
     showPunjabiMeaning, presenterMode, search, throttledScroll,
     scrolling, larivaarAssist, setLarivaarAssist, setShabadID,
     statusText, setStatusText, setHeading, isWrap, setContainerRef, shabadTuk, setShabadTuk,
-    setLogo, searchMethod, setLoading, vishraams
+    setLogo, searchMethod, setLoading, vishraams, setSelectedShabad, selectedShabad
   } = useContext(BaniContext) as AppContextType ?? {}
   const { fetchBani, fetchShabad, fetchShabads } = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
@@ -46,6 +46,7 @@ const Bani = ({ baniId, shabadId }) => {
       setStatusText(null);
       setHeading('')
       setShabadTuk(null)
+      setSelectedShabad(null)
       setLogo();
     }
   }, [])
@@ -88,12 +89,12 @@ const Bani = ({ baniId, shabadId }) => {
 
     if (shabadId) {
       const currentHistory = getFromLS('history') ?? [];
-      const lastShabad = currentHistory.pop();
+      const lastShabad = (currentHistory).reverse().pop();
       const shabadAlreadyPresent = lastShabad.shabadId === shabadId;
       fetchShabad(shabadId).then(async (data) => {
         setBaniData(data as any);
         setStatusText(null);
-        const shabadTuk = data.details[0].tuk;
+        const shabadTuk = selectedShabad ?? data.details[0].tuk;
         if (!shabadAlreadyPresent) saveToLS('history', [{ shabadId, shabadTuk }, ...currentHistory]);
         saveToLS('current', { shabadId, shabadTuk });
         const fetchPromises = [];
@@ -155,7 +156,9 @@ const Bani = ({ baniId, shabadId }) => {
 
       else {
         if (tukFirstLetters?.includes(firstLettersSearch) || tuk === shabadTuk) {
-          if (shabadId) setShabadTuk(tuk);
+          if (shabadId) {
+            setShabadTuk(selectedShabad ?? tuk)
+          };
           setFoundShabadIndex({ previous: foundShabadIndex?.current, current: i });
           scrollToFoundShabad();
           break;
@@ -241,6 +244,7 @@ const Bani = ({ baniId, shabadId }) => {
               setStatusText(<CircularProgress />)
               setLoading(true)
               fetchShabads(promptResp).then((res) => {
+
                 setShabadID(res.verses[0].shabadId);
                 setShabadTuk(res.verses[0].larivaar.unicode);
                 handleSearch()

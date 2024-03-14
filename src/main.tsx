@@ -69,7 +69,7 @@ function Main() {
   const [searchMethod, setSearchMethod] = useState(SearchMethods['firstLetter']);
   const [showHistory, setShowHistory] = useState(false);
   const [vishraams, setVishraams] = useState(true);
-
+  const [selectedShabad, setSelectedShabad] = useState()
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
       return {
@@ -299,7 +299,8 @@ function Main() {
       setOpacity, throttledScroll, scrollPosition, setScrollPosition, scrolling, setScrolling, expandCustomisations, setExpandCustomisations
       , larivaarAssist, setLarivaarAssist, shabadID, setShabadID, setHeading, baniName, setBaniName,
       statusText, setStatusText, isWrap, setIsWrap, setContainerRef, showFavourites, setShowFavourites,
-      shabadTuk, setShabadTuk, logo, setLogo, showHistory, searchMethod, vishraams, setVishraams
+      shabadTuk, setShabadTuk, logo, setLogo, showHistory, searchMethod, vishraams, setVishraams,
+      selectedShabad, setSelectedShabad
     }}>
       <div className={expandCustomisations ? "expandCustomisations" : 'customisations'}>
         <div className={expandCustomisations ? "buttonGroupNoMarginTop" : 'buttonGroup'} >

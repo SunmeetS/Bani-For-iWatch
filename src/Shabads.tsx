@@ -6,6 +6,7 @@ import { debounce, utils } from './utils'
 import { toEnglish, toUnicode } from 'gurmukhi-utils'
 import { useNavigate } from 'react-router-dom'
 import { getFromLS } from './App'
+import { AppContextType } from './Types/types'
 
 type Props = {}
 
@@ -15,8 +16,8 @@ const Shabads = (props: Props) => {
     const [searchInput, setSearchInput] = useState('');
     const { shabadID, setShabadID, setHeading, setSearch, setBaniName, search, statusText,
         setStatusText, isEnglish, showFavourites, setShowFavourites, shabadTuk, setShabadTuk,
-        setLogo, showHistory
-    } = useContext(BaniContext);
+        setLogo, showHistory, setSelectedShabad
+    } = (useContext(BaniContext)) as AppContextType;
     const { fetchShabads, fetchMultiple } = utils()
     const navigate = useNavigate()
     const favourites = getFromLS('favourites')
@@ -67,6 +68,7 @@ const Shabads = (props: Props) => {
                                 setBaniName(shabad.shabadTuk);
                                 setHeading?.(shabad.shabadTuk.split(' ').slice(0, 6).join(''));
                                 setShabadTuk(shabad.shabadTuk)
+                                setSelectedShabad(shabad.shabadTuk)
                                 navigate('/bani');
                             }
                         }>
@@ -92,26 +94,27 @@ const Shabads = (props: Props) => {
                             }}
                                 placeholder='ਗ ਮ ਸ ਸ ਹ ਨ' />
                         </div>
+                        { statusText && <h1>{statusText}</h1> }
                         {
-                            statusText && <h1>{statusText}</h1>}
-                        {shabads?.verses?.map((shabad) => {
-                            const tuk = shabad.verse.unicode
-                            const baniName = (tuk as string).split(' ').slice(0, 6).join('');
-                            const englishTuk = toEnglish(tuk)
-                            return (
-                                <>
-                                    <h1 onClick={() => {
-                                        setShabadID(shabad.shabadId);
-                                        setBaniName(baniName);
-                                        setHeading(baniName)
-                                        setShabadTuk(tuk)
-                                        navigate('/bani')
-                                    }} className='bani searchTuk'>
-                                        {isEnglish ? englishTuk : tuk}
-                                    </h1>
-                                </>
-                            )
-                        })
+                            shabads?.verses?.map((shabad) => {
+                                const tuk = shabad.verse.unicode
+                                const baniName = (tuk as string).split(' ').slice(0, 6).join('');
+                                const englishTuk = toEnglish(tuk)
+                                return (
+                                    <>
+                                        <h1 onClick={() => {
+                                            setShabadID(shabad.shabadId);
+                                            setSelectedShabad(tuk)
+                                            setBaniName(baniName);
+                                            setHeading(baniName)
+                                            setShabadTuk(tuk)
+                                            navigate('/bani')
+                                        }} className='bani searchTuk'>
+                                            {isEnglish ? englishTuk : tuk}
+                                        </h1>
+                                    </>
+                                )
+                            })
                         }
                     </>
                 }
