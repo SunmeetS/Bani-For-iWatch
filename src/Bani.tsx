@@ -214,19 +214,13 @@ const Bani = ({ baniId, shabadId }) => {
   return (
     <div className="App">
       <div className="Bani" ref={containerRef}>
-        <div
-          style={{
-            display: "flex",
-            background: "#0000006b",
-            alignItems: "center",
-          }}
-        >
+        <div className="baniInfo">
           {Object.keys(baniData.Info).map((info) => (
-            <h4 style={{ margin: 10 }}>
+            <h4 className="baniInfoText">
               {baniData.Info[info] && `${info}: ${baniData.Info[info]}`}
             </h4>
           ))}{" "}
-          <h4 style={{ margin: 10 }}>{heading && `Name: ${heading}`}</h4>
+          <h4 className="baniInfoText">{heading && `Name: ${heading}`}</h4>
         </div>
         {statusText && statusText}
 

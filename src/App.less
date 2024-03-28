@@ -70,9 +70,12 @@ h1, h2, h3, h4, h5, h6, p, span {
 
 .homeScreen {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    flex: 1;
     max-height: calc(100vh - var(--customisationsHeight));
+    height: calc(100vh - var(--customisationsHeight));
+    justify-content: center;
     padding: var(--customisationsHeight);
     >* {
         width: fit-content;
@@ -112,6 +115,15 @@ h1, h2, h3, h4, h5, h6, p, span {
     align-items: center;
     flex-direction: column;
 }
+.baniInfo {
+    display: flex;
+    background: #0000006b;
+    align-items: center;
+    width: 100%;
+    overflow-x: scroll;
+  }
+
+.baniInfoText { margin: 10px; word-break: keep-all}
 
 .vishraamMajor {
     color: #d95f0e;
