@@ -20,7 +20,6 @@ import {
 } from "@mui/joy";
 import LiveAudio from "./LiveAudio";
 import Shabads from "./Shabads";
-import { toUnicode } from "gurmukhi-utils";
 import JaapCounter from "./JaapCounter";
 
 export const BaniContext = createContext({});

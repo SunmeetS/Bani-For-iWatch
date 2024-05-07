@@ -101,13 +101,14 @@ const Bani = ({ baniId, shabadId }) => {
 
   useEffect(() => {
     if (baniId) {
+      saveToLS("current", { baniId });
       fetchBani(baniId)
         .then((bani) => {
           setBaniData(bani);
           setStatusText(null);
           saveToLS("current", { baniId });
         })
-        .catch(() => {
+        .catch((err) => {
           setStatusText("Failed to load Bani data");
         });
     }
@@ -125,6 +126,9 @@ const Bani = ({ baniId, shabadId }) => {
             saveToLS("history", [{ shabadId, shabadTuk }, ...currentHistory]);
           saveToLS("current", { shabadId, shabadTuk });
           const fetchPromises = [];
+          const details = data.details;
+          setHeading((details[0].tuk.split(' ').length < 4 ? details[1].tuk : details[0].tuk))
+          containerRef.current.scrollTop = 0;
 
           for (let i = 0; i < 10; i++) {
             fetchPromises.push(fetchShabad(shabadId - i));
@@ -364,7 +368,6 @@ const Bani = ({ baniId, shabadId }) => {
             <Button
               onClick={() => {
                 setShabadID(baniData.next);
-                containerRef.current.scrollTop = 0;
               }}
             >
               {"Next"}

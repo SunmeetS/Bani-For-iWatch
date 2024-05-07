@@ -1,4 +1,4 @@
-import { toUnicode } from "gurmukhi-utils";
+
 import { API_URL, fetcher } from "./App";
 
 export type Bani = {
@@ -61,6 +61,15 @@ export const GurmukhiRaagList = [
   "ਨਟ ਨਾਰਾਇਨ",
   "ਨਟ",
 ];
+
+export function getBaniInfo (bani, type) {
+  return {
+    Raag: bani?.[type+'Info']?.raag?.unicode,
+    Writer: bani?.[type+'Info']?.writer?.english,
+    Ang: bani?.[type+'Info']?.source?.pageNo,
+    Source: bani?.[type+'Info']?.source?.unicode,
+  }
+}
 
 export const debounce = (func, delay) => {
   let timer;
@@ -162,12 +171,7 @@ export function utils() {
   const fetchBani = async (id: number) => {
     const fetchBaniUrl = API_URL + "banis/" + id;
     const bani = await fetcher(fetchBaniUrl);
-    const Info: Info = {
-      Raag: bani?.baniInfo?.raag?.unicode,
-      Writer: toUnicode(bani?.baniInfo?.writer?.gurmukhi),
-      Ang: bani?.baniInfo?.source?.pageNo,
-      Source: bani?.baniInfo?.source?.unicode,
-    };
+    const Info: Info = getBaniInfo(bani, 'bani');
 
     const baniDetails = bani.verses.map((ele) => {
       ele = ele.verse;
@@ -203,12 +207,7 @@ export function utils() {
 
     const shabad = await fetcher(fetchShabadUrl);
     const { previous, next } = shabad.navigation;
-    const Info: Info = {
-      Raag: shabad.shabadInfo.raag.unicode,
-      Writer: toUnicode(shabad?.shabadInfo?.writer?.gurmukhi),
-      Ang: shabad?.shabadInfo?.pageNo,
-      Source: shabad?.shabadInfo?.source?.unicode,
-    };
+    const Info: Info = getBaniInfo(shabad, 'shabad');
     const shabadDetails = shabad.verses.map((ele) => {
       const tuk = ele.verse.unicode;
       const englishTuk = ele.transliteration.english;
