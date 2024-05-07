@@ -52,7 +52,7 @@ const Bani = ({ baniId, shabadId }) => {
 
   useEffect(() => {
     if (!baniId && !shabadId) {
-      const { baniId, shabadId } = getFromLS("current");
+      const { baniId, shabadId } = getFromLS("current") ?? {};
 
       if (baniId) {
         setBaniID(baniId);
@@ -114,7 +114,7 @@ const Bani = ({ baniId, shabadId }) => {
 
     if (shabadId) {
       const currentHistory = getFromLS("history") ?? [];
-      const lastShabad = currentHistory.reverse().pop();
+      const lastShabad = currentHistory.reverse().pop() ?? {};
       const shabadAlreadyPresent = lastShabad.shabadId === shabadId;
       fetchShabad(shabadId)
         .then(async (data) => {
