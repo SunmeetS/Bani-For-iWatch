@@ -1,1 +1,1 @@
-View it at https://www.smartgurbani.netlify.app
+View it at https://smartgurbani.netlify.app
