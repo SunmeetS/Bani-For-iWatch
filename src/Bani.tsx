@@ -182,7 +182,7 @@ const Bani = ({ baniId, shabadId }) => {
         if (removeMatras(tuk).includes(removeMatras(search))) {
           setFoundShabadIndex({
             previous: foundShabadIndex?.current,
-            current: i,
+            current: i + 1,
           });
           scrollToFoundShabad();
           break;
@@ -197,7 +197,7 @@ const Bani = ({ baniId, shabadId }) => {
           }
           setFoundShabadIndex({
             previous: foundShabadIndex?.current,
-            current: i,
+            current: i + 1,
           });
           scrollToFoundShabad();
           break;
