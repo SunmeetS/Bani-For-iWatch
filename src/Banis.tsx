@@ -40,9 +40,8 @@ const Banis = () => {
     })
 
     function fetchAllBanis() {
-      fetchMultiple(banis?.map(({ ID }) => { return { baniId: ID } }), 'Error in Pre-Fetching Banis', 'bani');
+      fetchMultiple(banis?.map(({ ID }) => { return { baniId: ID } }), 'Banis fetched succesfully', 'bani');
     }
-    fetchAllBanis()
   }, [])
 
   const navigate = useNavigate()

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { BaniContext } from './main'
-import { Button, CircularProgress, Input } from '@mui/joy'
+import { CircularProgress, Input } from '@mui/joy'
 import './App.less'
 import { debounce, utils } from './utils'
 import { toEnglish, toUnicode } from 'gurmukhi-utils'
@@ -88,7 +88,7 @@ const Shabads = (props: Props) => {
                         <div className="inputGroup">
                             <Input autoFocus value={searchInput} onChange={(e) => {
                                 const inputText = e.target.value;
-                                const gurmukhiText = toUnicode(inputText);
+                                const gurmukhiText = toUnicode(inputText ?? '');
                                 setSearchInput?.(gurmukhiText);
                                 setSearch?.(gurmukhiText)
                             }}

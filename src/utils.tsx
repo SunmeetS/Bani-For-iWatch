@@ -1,4 +1,5 @@
 
+import { toUnicode } from "gurmukhi-utils";
 import { API_URL, fetcher } from "./App";
 
 export type Bani = {
@@ -65,7 +66,7 @@ export const GurmukhiRaagList = [
 export function getBaniInfo (bani, type) {
   return {
     Raag: bani?.[type+'Info']?.raag?.unicode,
-    Writer: bani?.[type+'Info']?.writer?.english,
+    Writer: toUnicode(bani?.[type+'Info']?.writer?.gurmukhi ?? ''),
     Ang: bani?.[type+'Info']?.source?.pageNo,
     Source: bani?.[type+'Info']?.source?.unicode,
   }
@@ -183,9 +184,9 @@ export function utils() {
       const punjabiMeaning =
         pu1?.unicode ?? pu2?.unicode ?? ft?.unicode ?? ss?.unicode;
       let vishraam =
-        ele?.visraam["igurbani"] ||
-        ele?.visraam["sttm"] ||
-        ele?.visraam["sttm2"];
+        ele?.visraam?.["igurbani"] ||
+        ele?.visraam?.["sttm"] ||
+        ele?.visraam?.["sttm2"];
       return {
         tuk,
         englishTuk,

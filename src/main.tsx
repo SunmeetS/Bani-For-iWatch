@@ -14,13 +14,14 @@ import {
   Checkbox,
   CircularProgress,
   Input,
-  Link,
   Switch,
   Typography,
 } from "@mui/joy";
 import LiveAudio from "./LiveAudio";
 import Shabads from "./Shabads";
+import { toUnicode } from "gurmukhi-utils";
 import JaapCounter from "./JaapCounter";
+import { Snackbar } from "@mui/material";
 
 export const BaniContext = createContext({});
 export enum SearchMethods {
@@ -80,6 +81,7 @@ function Main() {
   const [showHistory, setShowHistory] = useState(false);
   const [vishraams, setVishraams] = useState(true);
   const [selectedShabad, setSelectedShabad] = useState();
+  const [snackbarDetails, setSnackbarDetails] = useState({message: '', open: false});
   const throttledScroll = throttle((e) => {
     setScrollPosition((val) => {
       return {
@@ -121,6 +123,14 @@ function Main() {
     },
   ]);
 
+  function showSnackbar(message) {
+    setSnackbarDetails({message, open: true});
+  }
+
+  function closeSnackbar() {
+    setSnackbarDetails({message: '', open: false});
+  }
+
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     setDeferredPrompt(e);
@@ -130,7 +140,7 @@ function Main() {
 
   const handleInputChange = (e) => {
     const inputText = e.target.value;
-    const gurmukhiText = toUnicode(inputText);
+    const gurmukhiText = toUnicode(inputText ?? '');
     setSearch(gurmukhiText);
   };
 
@@ -466,6 +476,8 @@ function Main() {
         setVishraams,
         selectedShabad,
         setSelectedShabad,
+        showSnackbar,
+        closeSnackbar
       }}
     >
       <div
@@ -542,6 +554,16 @@ function Main() {
         {expandCustomisations && <>{customisations?.map((ele) => ele)}</>}
       </div>
       <RouterProvider router={router} />
+      {
+        snackbarDetails.open && <Snackbar 
+          open={true}
+          message={snackbarDetails.message}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          action={<Button onClick={closeSnackbar}>Close</Button>}
+          autoHideDuration={3000}
+          onClose={closeSnackbar}
+        />
+      }
     </BaniContext.Provider>
   );
 }

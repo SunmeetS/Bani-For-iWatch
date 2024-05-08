@@ -41,6 +41,7 @@ const Bani = ({ baniId, shabadId }) => {
     setSelectedShabad,
     selectedShabad,
     heading,
+    showSnackbar,
   } = (useContext(BaniContext) as AppContextType) ?? {};
   const { fetchBani, fetchShabad, fetchShabads } = utils();
   const [foundShabadIndex, setFoundShabadIndex] = useState(null);
@@ -127,7 +128,7 @@ const Bani = ({ baniId, shabadId }) => {
           saveToLS("current", { shabadId, shabadTuk });
           const fetchPromises = [];
           const details = data.details;
-          setHeading((details[0].tuk.split(' ').length < 4 ? details[1].tuk : details[0].tuk))
+          setHeading(((details[0].englishMeaning.includes('Mehla') || details[0].tuk.split(' ').length < 4) ? details[1].tuk : details[0].tuk))
           containerRef.current.scrollTop = 0;
 
           for (let i = 0; i < 10; i++) {
@@ -346,15 +347,18 @@ const Bani = ({ baniId, shabadId }) => {
             </Button>
             <svg
               onClick={(e) => {
-                const promptResp = prompt("Go to Shabad :");
-                setStatusText(<CircularProgress />);
-                setLoading(true);
-                fetchShabads(promptResp).then((res) => {
-                  setShabadID(res.verses[0].shabadId);
-                  setShabadTuk(res.verses[0].larivaar.unicode);
-                  handleSearch();
-                  setLoading(false);
-                });
+                // alert('Feature in progress')
+                showSnackbar('Feature in progress')
+
+                // const promptResp = prompt("Go to Shabad :");
+                // setStatusText(<CircularProgress />);
+                // setLoading(true);
+                // fetchShabads(promptResp).then((res) => {
+                //   setShabadID(res.verses[0].shabadId);
+                //   setShabadTuk(res.verses[0].larivaar.unicode);
+                //   handleSearch();
+                //   setLoading(false);
+                // });
               }}
               xmlns="http://www.w3.org/2000/svg"
               x="0px"

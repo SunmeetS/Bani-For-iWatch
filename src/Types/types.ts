@@ -55,4 +55,6 @@ export interface AppContextType {
     setVishraams?: (value: any[]) => void; // <-- Replace 'any[]' with appropriate type
     selectedShabad?: any; // <-- Replace 'any' with appropriate type
     setSelectedShabad?: (value: any) => void; // <-- Replace 'any' with appropriate type
+    showSnackbar?: (message: string) => void;
+    closeSnackbar?: () => void;
 }

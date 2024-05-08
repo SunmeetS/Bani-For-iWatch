@@ -16,7 +16,7 @@
     "@mui/joy": "5.0.0-beta.18",
     "@mui/material": "^5.15.0",
     "@sttm/banidb": "^3.0.0",
-    "Stack": "link:@mui/material/Stack",
+    "Stack": "file:@mui/material/Stack",
     "gurmukhi-utils": "^3.2.2",
     "less": "^4.2.0",
     "pnpm": "^8.12.1",
